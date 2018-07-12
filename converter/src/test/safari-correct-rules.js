@@ -1,13 +1,13 @@
-var URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
-var URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
-var URL_FILTER_CSS_RULES = ".*";
+const URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
+const URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
+const URL_FILTER_CSS_RULES = ".*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
-var URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
+const URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
-var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
+const URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
 // Rules to test
-var rules = [
+const rules = [
     '||pics.rbc.ru/js/swf',
     '||tardangro.com^$third-party',
     '||videoplaza.com^$~object-subrequest,third-party',
@@ -41,7 +41,7 @@ var rules = [
 ];
 
 // Conversion result
-var safariCorrectRules = [
+const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_CSS_RULES
@@ -286,23 +286,23 @@ var safariCorrectRules = [
 ];
 
 function _checkResult(json, errors) {
-    var expectedErrorsCount = 4;
-    var expectedCssTrunkatedCount = 4;
+    const expectedErrorsCount = 4;
+    const expectedCssTrunkatedCount = 4;
 
     if (json === null) {
         errors.push('Convertation failed!');
         return;
     }
 
-    var expectedLength = (rules.length - expectedErrorsCount - expectedCssTrunkatedCount);
-    if (json.convertedCount != expectedLength) {
-        var message = 'Not all the rules converted \n';
+    const expectedLength = (rules.length - expectedErrorsCount - expectedCssTrunkatedCount);
+    if (json.convertedCount !== expectedLength) {
+        let message = 'Not all the rules converted \n';
         message += 'result:' + json.length;
         message += ' expected:' + expectedLength;
         errors.push(message);
     }
 
-    if (json.errorsCount != expectedErrorsCount) {
+    if (json.errorsCount !== expectedErrorsCount) {
         errors.push('Errors count is wrong');
     }
 
@@ -310,14 +310,14 @@ function _checkResult(json, errors) {
         errors.push('Overlimit flag is wrong');
     }
 
-    var convertedString = json.converted;
-    if (convertedString === null || convertedString == '') {
+    const convertedString = json.converted;
+    if (convertedString === null || convertedString === '') {
         errors.push('Converted block is wrong');
     }
 
-    var converted = JSON.parse(convertedString);
+    const converted = JSON.parse(convertedString);
     adguard.console.debug(converted);
-    if (converted.length != rules.length - expectedErrorsCount - expectedCssTrunkatedCount) {
+    if (converted.length !== rules.length - expectedErrorsCount - expectedCssTrunkatedCount) {
         errors.push('Not all the rules presented in json');
     }
 
@@ -327,34 +327,34 @@ function _checkResult(json, errors) {
     }
 
     function checkRule(current, expected) {
-        if (current.trigger['url-filter'] != expected.trigger['url-filter']) {
+        if (current.trigger['url-filter'] !== expected.trigger['url-filter']) {
             errors.push(createErrorMessage(expected, current, 'trigger url-filter'));
         }
 
         if (expected.trigger['load-type']) {
             if (!current.trigger['load-type']
-                || current.trigger['load-type'].toString() != expected.trigger['load-type'].toString()) {
+                || current.trigger['load-type'].toString() !== expected.trigger['load-type'].toString()) {
                 errors.push(createErrorMessage(expected, current, 'trigger load-type'));
             }
         }
 
         if (expected.trigger['if-domain']) {
             if (!current.trigger['if-domain']
-                || current.trigger['if-domain'].toString() != expected.trigger['if-domain'].toString()) {
+                || current.trigger['if-domain'].toString() !== expected.trigger['if-domain'].toString()) {
                 errors.push(createErrorMessage(expected, current, 'trigger if-domain'));
             }
         }
 
         if (expected.trigger['unless-domain']) {
             if (!current.trigger['unless-domain']
-                || current.trigger['unless-domain'].toString() != expected.trigger['unless-domain'].toString()) {
+                || current.trigger['unless-domain'].toString() !== expected.trigger['unless-domain'].toString()) {
                 errors.push(createErrorMessage(expected, current, 'trigger unless-domain'));
             }
         }
 
         if (expected.trigger['resource-type']) {
             if (!current.trigger['resource-type']
-                || current.trigger['resource-type'].toString() != expected.trigger['resource-type'].toString()) {
+                || current.trigger['resource-type'].toString() !== expected.trigger['resource-type'].toString()) {
                 errors.push(createErrorMessage(expected, current, 'trigger resource-type'));
             }
         } else {
@@ -365,24 +365,24 @@ function _checkResult(json, errors) {
 
         if (expected.action['type']) {
             if (!current.action['type']
-                || current.action['type'].toString() != expected.action['type'].toString()) {
+                || current.action['type'].toString() !== expected.action['type'].toString()) {
                 errors.push(createErrorMessage(expected, current, 'action type'));
             }
         }
 
         if (expected.action['selector']) {
             if (!current.action['selector']
-                || current.action['selector'].toString() != expected.action['selector'].toString()) {
+                || current.action['selector'].toString() !== expected.action['selector'].toString()) {
                 errors.push(createErrorMessage(expected, current, 'action selector'));
             }
         }
     }
 
     // From test_safari_correct.js
-    var correct = safariCorrectRules;
+    const correct = safariCorrectRules;
 
     converted.forEach(function (current, i) {
-        var expected = correct[i];
+        const expected = correct[i];
 
         //adguard.console.debug(current);
         //adguard.console.debug(expected);

@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari */
+/* global safari, jsonFromFilters */
 
 (function () {
 
@@ -24,7 +24,7 @@
     var result = [];
 
     var testRules = function (rules, onComplete) {
-        var convertationResult = SafariContentBlockerConverter.convertArray(rules);
+        var convertationResult = jsonFromFilters(rules);
         //console.log('Converted: content blocker length=' + convertationResult.convertedCount);
 
         //console.log('Setting content blocker..');
