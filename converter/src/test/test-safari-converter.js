@@ -368,8 +368,8 @@ QUnit.test("CSP rules", function (assert) {
     var rule = new adguard.rules.UrlFilterRule('|blob:$script,domain=pornhub.com|xhamster.com|youporn.com', 0);
 
     var result = SafariContentBlockerConverter.convertArray([rule]);
-    assert.equal(result.errorsCount, 1);
-    assert.equal(result.convertedCount, 0);
+    assert.equal(result.errorsCount, 0);
+    assert.equal(result.convertedCount, 1);
 });
 
 QUnit.test("Elemhide rules", function (assert) {

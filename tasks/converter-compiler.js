@@ -29,6 +29,7 @@ const downloadExternalFiles = (done) => {
         '/Extension/lib/filter/rules/css-filter-rule.js',
         '/Extension/lib/filter/rules/script-filter-rule.js',
         '/Extension/lib/filter/rules/url-filter-rule.js',
+        '/Extension/lib/filter/rules/content-filter-rule.js',
 
         '/Extension/browser/safari/lib/converter.js'
     ];
@@ -69,6 +70,7 @@ const compile = (done) => {
         './extension/css-filter-rule.js',
         './extension/script-filter-rule.js',
         './extension/url-filter-rule.js',
+        './extension/content-filter-rule.js',
         './converter.js'
     ];
 
