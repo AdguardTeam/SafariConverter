@@ -1,14 +1,9 @@
-! Checksum: bZm+TJB0JkTiUaOHMNMSOQ
-! Title: Dutch filter
-! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.33
-! TimeUpdated: 2017-09-07T17:01:37.228+04:00
+! Checksum: /rMkF7YHidZkgPt3EubCUg
+! Title: AdGuard Dutch filter
+! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
+! Version: 2.0.0.31
+! TimeUpdated: 2018-06-22T00:04:04+00:00
 ! Expires: 2 days (update frequency)
-#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
-#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 -reclameplaatjes/
 .be/ads/
 /adbron.
@@ -685,6 +680,7 @@ _advertentieleaderboardhome.
 @@||doubleclick.net^*adj/hbvl/homepage;tile=15;sz=160x600;$script,domain=hbvl.be
 @@||doubleclick.net^*adj/ster_cinema.nl/preroll;$script,domain=cinema.nl
 @@||easyads.eu/api/Advertisements/$domain=marktfeed.nl
+@@||easyads.eu/api/v2/AdvertentiePlanet/me/advertisements/$domain=advertentieplanet.nl
 @@||g.doubleclick.net/gampad/ads?$script,domain=marktplaats.nl
 @@||g.doubleclick.net/gampad/ads?$xmlhttprequest,domain=radioluisteren.fm
 @@||google.com/ads/search/module/ads/*/search.js$domain=zoover.be|zoover.nl
@@ -1289,19 +1285,48 @@ amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
+||widget.igcdn.nl^$third-party
 ||wwa.pacific-yield.com^$third-party
+@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+@@/ad_pics/*$image,domain=webwereld.nl
+windowstechblog.nl#@#.an-advert-banner
+windowstechblog.nl#@##adsense
+windowstechblog.nl#@#.an-sponsored
+icttipsandtricks.nl##body > div[style^="position: fixed; top:"][style*="z-index: 9999"]:not([class]):not([id])
+@@||static.webwereld.nl/javascripts/advert.js
+@@||v.fwmrm.net/ad/g/1$domain=player.medialaancdn.be|vtm.be
+!+ PLATFORM(ios, ext_android_cb)
+@@||vtm.be^$generichide
+!+ PLATFORM(ios, ext_android_cb)
+@@||player.medialaancdn.be^$generichide
+!+ PLATFORM(ios, ext_android_cb)
+@@||eurosport.nl^$generichide
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||voipsipclient.blogspot.nl^$generichide
+voetbalwedstrijdenvandaag.nl#@##sponsorText
+@@||v.fwmrm.net/ad/g/1$domain=q2.be
+!+ PLATFORM(ios, ext_android_cb)
+@@||q2.be^$generichide
+icttipsandtricks.nl##body #adblock_screen
 @@||gamekings.tv/wp-content/themes/*/js/ads.js
 vogelgeluid.nl#@##banner_ad
-@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 @@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
-telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
-ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
-gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
-klusidee.nl##tr.table-row[-ext-has=".td-ad"]
-omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+androidplanet.nl###featured-header[data-campaign]
+androidplanet.nl##.sidebar > .widget_ad_html
+||mediareader.omroepwest.nl/gaslicht^
+||unity.nu/media/*/BANNERS/
+||topomania.net/sites/topomania.net/images/pacnum-promo.png
+ondertitel.com##.billboard_ad_new
+mediamarkt.nl###colorbox
+||pornozot.com/js/compiled/exo-
+||pornozot.com/js/compiled/custom-vendor.js
+pornozot.com##.banners-footer
+pornozot.com##.texto-aviso
+/vtm_od/prerolls/*.mp4$domain=q2.be
+berekenhet.nl##.bh-ads
 jan-magazine.nl##.banner.top
 feyenoord.nl##.reveal-modal-bg
 feyenoord.nl###adModal
@@ -1313,7 +1338,6 @@ allaboutphones.nl##.ad-container
 autoweek.nl##.page-banner
 marktplaats.nl###banner-aanbieding
 marktplaats.nl###banner-bottom
-marktplaats.nl###banner-marketing
 marktplaats.nl###banner-viptop
 afkortingen.nu###banner_right
 afkortingen.nu###banner_top
@@ -1353,6 +1377,10 @@ klusidee.nl##td.td-ad
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
 ||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+voipsipclient.blogspot.nl##.adsbygoogle
+@@||player.ooyala.com/static/*/ad-plugin/$domain=qmusic.nl
+@@||kpn.com^$third-party
 @@||diodrogist.nl^$generichide
 klusidee.nl#@#.header-ad
 @@||media.boomads.com/images^$domain=telegraaf.nl

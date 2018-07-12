@@ -1,23 +1,34 @@
+import {EXTENSION_FILTERS_DIR, FILTER_REPO_URL_TEMPLATE} from './consts';
+import Logs from './log';
+import downloadFileSync from 'download-file-sync';
+import fs from 'fs-extra';
+import path from 'path';
+
+const logs = new Logs();
+
 /**
  * Updates filters
  */
 const downloadFilters = (done) => {
-    //TODO: Implement
+    fs.ensureDirSync(EXTENSION_FILTERS_DIR);
 
-    /*
-     curl -s -o 'filters/filter_1.txt' 'https://filters.adtidy.org/ios/filters/1_optimized.txt'
-     curl -s -o 'filters/filter_2.txt' 'https://filters.adtidy.org/ios/filters/2_optimized.txt'
-     curl -s -o 'filters/filter_3.txt' 'https://filters.adtidy.org/ios/filters/3_optimized.txt'
-     curl -s -o 'filters/filter_4.txt' 'https://filters.adtidy.org/ios/filters/4_optimized.txt'
-     curl -s -o 'filters/filter_5.txt' 'https://filters.adtidy.org/ios/filters/5_optimized.txt'
-     curl -s -o 'filters/filter_6.txt' 'https://filters.adtidy.org/ios/filters/6_optimized.txt'
-     curl -s -o 'filters/filter_7.txt' 'https://filters.adtidy.org/ios/filters/7_optimized.txt'
-     curl -s -o 'filters/filter_8.txt' 'https://filters.adtidy.org/ios/filters/8_optimized.txt'
-     curl -s -o 'filters/filter_9.txt' 'https://filters.adtidy.org/ios/filters/9_optimized.txt'
-     curl -s -o 'filters/filter_10.txt' 'https://filters.adtidy.org/ios/filters/10_optimized.txt'
-     curl -s -o 'filters/filter_11.txt' 'https://filters.adtidy.org/ios/filters/11_optimized.txt'
-     curl -s -o 'filters/filter_12.txt' 'https://filters.adtidy.org/ios/filters/12_optimized.txt'
-     */
+    //TODO: Parse from args
+    const filters = Array.from(Array(15).keys()).slice(1);
+
+    let iFilters = filters.length;
+    while (iFilters--) {
+        let filterId = filters[iFilters];
+        let downloadUrl = FILTER_REPO_URL_TEMPLATE.replace("{filterId}", filterId);
+
+        logs.info("Downloading " + downloadUrl);
+        let content = downloadFileSync(downloadUrl);
+
+        if (!content) {
+            throw "Cannot download filter " + filterId;
+        }
+
+        fs.writeFileSync(path.join(EXTENSION_FILTERS_DIR, `filter_${filterId}.txt`), content);
+    }
 
     return done();
 };
