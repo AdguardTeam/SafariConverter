@@ -24,7 +24,7 @@ var SafariContentBlockerConverter = (function () {
     /**
      * Safari content blocking format rules converter.
      */
-    var CONVERTER_VERSION = '2.0.3';
+    var CONVERTER_VERSION = '${version}';
     // Max number of CSS selectors per rule (look at compactCssRules function)
     var MAX_SELECTORS_PER_WIDE_RULE = 250;
 

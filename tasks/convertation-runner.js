@@ -1,5 +1,5 @@
 import gulp from 'gulp';
-import downloadFilters from 'download-filters';
+import downloadFilters from './download-filters';
 
 /**
  * Converts downloaded filters
