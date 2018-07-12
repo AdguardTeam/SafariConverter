@@ -296,7 +296,7 @@ function _checkResult(json, errors) {
 
     const expectedLength = (rules.length - expectedErrorsCount - expectedCssTrunkatedCount);
     if (json.convertedCount !== expectedLength) {
-        let message = 'Not all the rules converted \n';
+        var message = 'Not all the rules converted \n';
         message += 'result:' + json.length;
         message += ' expected:' + expectedLength;
         errors.push(message);

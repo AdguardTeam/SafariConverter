@@ -12,7 +12,7 @@ QUnit.test("Convert rules to JSON", function (assert) {
     assert.equal(errors.length, 0);
 
     if (errors.length > 0) {
-        let message = 'Errors: ' + errors.length + '\n';
+        var message = 'Errors: ' + errors.length + '\n';
 
         errors.forEach(function (e) {
             message += e;
@@ -64,14 +64,14 @@ QUnit.test("Convert first-party rule", function (assert) {
 });
 
 QUnit.test("Convert websocket rules", function (assert) {
-    let result = SafariContentBlockerConverter.convertArray(["||test.com^$websocket"]);
+    var result = SafariContentBlockerConverter.convertArray(["||test.com^$websocket"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
-    let converted = JSON.parse(result.converted);
+    var converted = JSON.parse(result.converted);
     assert.equal(1, converted.length);
 
-    let convertedRule = converted[0];
+    var convertedRule = converted[0];
     assert.equal(URL_FILTER_REGEXP_START_URL + "test\\.com[/:&?]?", convertedRule.trigger["url-filter"]);
     assert.notOk(convertedRule.trigger["if-domain"]);
     assert.notOk(convertedRule.trigger["unless-domain"]);
@@ -253,8 +253,8 @@ QUnit.test("Convert cyrillic rules", function (assert) {
 });
 
 QUnit.test("Convert regexp rules", function (assert) {
-    let ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
-    let result = SafariContentBlockerConverter.convertArray([ruleText]);
+    var ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 
@@ -276,7 +276,7 @@ QUnit.test("Convert regexp rules", function (assert) {
 
 QUnit.test("CSS pseudo classes", function (assert) {
     // :style should be ignored
-    let result = SafariContentBlockerConverter.convertArray(['yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)']);
+    var result = SafariContentBlockerConverter.convertArray(['yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)']);
     assert.equal(0, result.convertedCount);
     assert.equal(2, result.errorsCount);
 
@@ -316,7 +316,7 @@ QUnit.test("Regular expressions performance", function (assert) {
 
         const testUrl = 'http://www.some-domain.com/some-very/long/path/here/';
         const startTime = new Date().getTime();
-        for (let i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             regExp.test(testUrl);
         }
         const elapsed = new Date().getTime() - startTime;
@@ -339,7 +339,7 @@ QUnit.test("Content Blocker RegExp Problem", function (assert) {
 
     const rule = new adguard.rules.UrlFilterRule('@@||4players.de^$genericblock', 0);
 
-    let result = SafariContentBlockerConverter.convertArray([rule]);
+    var result = SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 
     // Initialize regexp (while processing request from content script for example)
