@@ -35,7 +35,7 @@ Compiles converter and dependencies to one single file in `/build` directory.
 ### How to convert some filters to content blocker format:
 
 ```
-    yarn convert 1,2,3,4,11,12 blocklist.json
+    yarn convert --1,2,3,4,11,12
 ```
 
 

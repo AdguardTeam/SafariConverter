@@ -1,3 +1,5 @@
+/* global process */
+
 import {EXTENSION_FILTERS_DIR, FILTER_REPO_URL_TEMPLATE} from './consts';
 import Logs from './log';
 import downloadFileSync from 'download-file-sync';
@@ -12,8 +14,11 @@ const logs = new Logs();
 const downloadFilters = (done) => {
     fs.ensureDirSync(EXTENSION_FILTERS_DIR);
 
-    //TODO: Parse from args
-    const filters = Array.from(Array(15).keys()).slice(1);
+    let filters = Array.from(Array(15).keys()).slice(1);
+    let args = process.argv.slice(2);
+    if (args.length > 5) {
+        filters = args[5].substring(2).split(",");
+    }
 
     let iFilters = filters.length;
     while (iFilters--) {

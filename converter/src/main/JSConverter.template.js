@@ -13,6 +13,13 @@
 */
 var jsonFromFilters = (function () {
 
+    /**
+     * Define window dummy object
+     */
+    if (typeof window === 'undefined') {
+        var window = Object.create(null);
+    }
+
 /**
  * Start of the dependencies content 
  */

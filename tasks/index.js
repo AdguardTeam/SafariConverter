@@ -12,7 +12,7 @@ export const buildConverter = gulp.series(clean, compileConverter, (done) => don
 export const runTests = gulp.series(tests, (done) => done());
 
 // convert some filters
-export const runConvertation = gulp.series(clean, compileConverter, convertFilters, (done) => done());
+export const runConvertation = gulp.series(convertFilters, (done) => done());
 
 // builds testing extension
 export const buildExtension = gulp.series(clean, compileConverter, compileExtension, (done) => done());
