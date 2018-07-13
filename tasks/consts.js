@@ -12,3 +12,5 @@ export const CONVERTED_JSON_FILE = 'converted.json';
 
 export const EXTENSION_REPO_URL = 'https://raw.githubusercontent.com/AdguardTeam/AdguardBrowserExtension/master';
 export const FILTER_REPO_URL_TEMPLATE = 'https://filters.adtidy.org/ios/filters/{filterId}_optimized.txt';
+
+export const MAX_ADGUARD_FILTER_ID = 14;

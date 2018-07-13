@@ -3,7 +3,7 @@
 import {jsonFromFilters} from '../build/converter/JSConverter.js';
 import gulp from 'gulp';
 import downloadFilters from './download-filters';
-import {EXTENSION_FILTERS_DIR, BUILD_DIR, CONVERTED_JSON_FILE} from './consts';
+import {EXTENSION_FILTERS_DIR, BUILD_DIR, CONVERTED_JSON_FILE, MAX_ADGUARD_FILTER_ID} from './consts';
 import fs from 'fs-extra';
 import Logs from './log';
 import path from 'path';
@@ -14,7 +14,7 @@ const logs = new Logs();
  * Converts downloaded filters
  */
 const convertFilters = (done) => {
-    let filters = Array.from(Array(15).keys()).slice(1);
+    let filters = Array.from(Array(MAX_ADGUARD_FILTER_ID + 1).keys()).slice(1);
 
     let args = process.argv.slice(2);
     if (args.length > 5) {

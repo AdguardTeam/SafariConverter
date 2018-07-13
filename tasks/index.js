@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import clean from './clean-build-dir';
 import compileConverter from './converter-compiler';
 import compileExtension from './extension-compiler';
-import convertFilters from './convertation-runner';
+import convertFilters from './converter-runner';
 import tests from './tests';
 
 // builds converter code

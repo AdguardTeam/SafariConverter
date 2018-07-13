@@ -1,6 +1,6 @@
 /* global process */
 
-import {EXTENSION_FILTERS_DIR, FILTER_REPO_URL_TEMPLATE} from './consts';
+import {EXTENSION_FILTERS_DIR, FILTER_REPO_URL_TEMPLATE, MAX_ADGUARD_FILTER_ID} from './consts';
 import Logs from './log';
 import downloadFileSync from 'download-file-sync';
 import fs from 'fs-extra';
@@ -14,7 +14,7 @@ const logs = new Logs();
 const downloadFilters = (done) => {
     fs.ensureDirSync(EXTENSION_FILTERS_DIR);
 
-    let filters = Array.from(Array(15).keys()).slice(1);
+    let filters = Array.from(Array(MAX_ADGUARD_FILTER_ID + 1).keys()).slice(1);
     let args = process.argv.slice(2);
     if (args.length > 5) {
         filters = args[5].substring(2).split(",");
