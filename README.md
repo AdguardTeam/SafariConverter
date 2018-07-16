@@ -2,35 +2,52 @@
 
 Safari Content Blocker Converter code and testing extension.
 
+
 ## Safari Content Blocker
 
 Converts filter rules in AdGuard format to the format supported by Safari.
 * https://webkit.org/blog/3476/content-blockers-first-look/
 
-### Requirements
-
-- node
-- npm
-
 ### How to build:
 
-`
-build
-`
+#### Requirements
+
+- [nodejs](https://nodejs.org/en/download/)
+- [yarn](https://yarnpkg.com/en/docs/install/)
+
+Install local dependencies by runnning:
+```
+    yarn install
+```
+
+Compiles converter and dependencies to one single file in `/build` directory. 
+
+```
+    yarn build
+```
 
 ### How to run tests:
 
-`
-run test 
-`
+```
+    yarn test
+```
 
-### How to build the code to one file:
+### How to convert some filters to content blocker format:
 
-For iOS version of Adguard we need a js rules converter compiled to one single file.
+```
+    yarn convert --1,2,3,4,11,12
+```
+
 
 ## Safari Content Blocker Tester
 
 Utility safari extension sample. However Safari doesn't log or throw any exception on incorrect rules, this sample extension will find invalid rules and log it to browser console.
+
+### How to build:
+
+```
+    yarn extension
+```
 
 ### How to run this extension:
 
@@ -39,4 +56,4 @@ Utility safari extension sample. However Safari doesn't log or throw any excepti
 
 #### To test specific rules set:
 
-- update test_filter.txt to /SafariContentBlockerTester.safariextension/filters
+- update test_filter.txt

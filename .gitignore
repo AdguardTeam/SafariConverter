@@ -1,3 +1,7 @@
 .idea/
 .vscode/
 *.iml
+build
+yarn-error.log
+node_modules
+filters
