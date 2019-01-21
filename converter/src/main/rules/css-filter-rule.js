@@ -26,7 +26,7 @@
      * http://adguard.com/en/filterrules.html#hideRules
      * http://adguard.com/en/filterrules.html#cssInjection
      */
-    var CssFilterRule = (function () {
+    const CssFilterRule = (function () {
 
         /**
          * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -36,17 +36,17 @@
          * @param cssContent  CSS content
          * @return String CSS content if it is a :style rule or null otherwise
          */
-        var convertCssInjectionRule = function (pseudoClass, cssContent) {
+        const convertCssInjectionRule = function (pseudoClass, cssContent) {
 
-            var selector = cssContent.substring(0, pseudoClass.nameStartIndex);
-            var styleStart = pseudoClass.nameStartIndex + pseudoClass.name.length + 1;
-            var styleEnd = cssContent.length - 1;
+            const selector = cssContent.substring(0, pseudoClass.nameStartIndex);
+            const styleStart = pseudoClass.nameStartIndex + pseudoClass.name.length + 1;
+            const styleEnd = cssContent.length - 1;
 
             if (styleEnd <= styleStart) {
                 throw new Error("Empty :style pseudo class: " + cssContent);
             }
 
-            var style = cssContent.substring(styleStart, styleEnd);
+            const style = cssContent.substring(styleStart, styleEnd);
 
             if (adguard.utils.strings.isEmpty(selector) || adguard.utils.strings.isEmpty(style)) {
                 throw new Error("Wrong :style pseudo-element syntax: " + cssContent);
@@ -61,10 +61,10 @@
          * @param selector
          * @returns {*} first PseudoClass found or null
          */
-        var parsePseudoClass = function (selector) {
-            var beginIndex = 0;
-            var nameStartIndex = -1;
-            var squareBracketIndex = 0;
+        const parsePseudoClass = function (selector) {
+            let beginIndex = 0;
+            let nameStartIndex = -1;
+            let squareBracketIndex = 0;
 
             while (squareBracketIndex >= 0) {
                 nameStartIndex = selector.indexOf(':', beginIndex);
@@ -72,7 +72,7 @@
                     return null;
                 }
 
-                if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) == '\\') {
+                if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) === '\\') {
                     // Escaped colon character
                     return null;
                 }
@@ -80,7 +80,7 @@
                 squareBracketIndex = selector.indexOf("[", beginIndex);
                 while (squareBracketIndex >= 0) {
                     if (nameStartIndex > squareBracketIndex) {
-                        var squareEndBracketIndex = selector.indexOf("]", squareBracketIndex + 1);
+                        const squareEndBracketIndex = selector.indexOf("]", squareBracketIndex + 1);
                         beginIndex = squareEndBracketIndex + 1;
                         if (nameStartIndex < squareEndBracketIndex) {
                             // Means that colon character is somewhere inside attribute selector
@@ -101,12 +101,12 @@
                 }
             }
 
-            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~', '"', "'"], nameStartIndex + 1);
+            let nameEndIndex = adguard.utils.strings.indexOfAny(selector, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~', '"', "'"], nameStartIndex + 1);
             if (nameEndIndex < 0) {
                 nameEndIndex = selector.length;
             }
 
-            var name = selector.substring(nameStartIndex, nameEndIndex);
+            const name = selector.substring(nameStartIndex, nameEndIndex);
             if (name.length <= 1) {
                 // Either empty name or a pseudo element (like ::content)
                 return null;
@@ -119,69 +119,35 @@
             };
         };
 
-        /**
-         * Parses rule mask
-         *
-         * @param rule
-         * @param isExtendedCss
-         * @param isInjectRule
-         */
-        var parseMask = function (rule, isExtendedCss, isInjectRule) {
-            var mask;
-            var isException;
-            if (!isExtendedCss) {
-                if (isInjectRule) {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-                } else {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
-                }
-            } else {
-                if (isInjectRule) {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE;
-                } else {
-                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE);
-                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE;
-                }
-            }
-
-            return mask;
-        };
-
-        /**
-         * CssFilterRule constructor
-         */
-        var constructor = function (rule, filterId) {
+        return function (rule, filterId) {
 
             api.FilterRule.call(this, rule, filterId);
 
-            var mask = api.FilterRule.findRuleMarker(rule, CssFilterRule.RULE_MARKERS, CssFilterRule.RULE_MARKER_FIRST_CHAR);
+            let mask = api.FilterRule.findRuleMarker(rule, CssFilterRule.RULE_MARKERS, CssFilterRule.RULE_MARKER_FIRST_CHAR);
             if (!mask) {
                 throw new Error("ruleText does not contain a CSS rule marker: " + rule);
             }
 
-            var isInjectRule = CssFilterRule.INJECT_MARKERS.indexOf(mask) !== -1;
+            let isInjectRule = CssFilterRule.INJECT_MARKERS.indexOf(mask) !== -1;
             this.whiteListRule = CssFilterRule.WHITELIST_MARKERS.indexOf(mask) !== -1;
-            var isExtendedCss = CssFilterRule.EXTCSS_MARKERS.indexOf(mask) !== -1;
+            let isExtendedCss = CssFilterRule.EXTCSS_MARKERS.indexOf(mask) !== -1;
 
-            var indexOfMask = rule.indexOf(mask);
+            const indexOfMask = rule.indexOf(mask);
             if (indexOfMask > 0) {
                 // domains are specified, parsing
-                var domains = rule.substring(0, indexOfMask);
+                const domains = rule.substring(0, indexOfMask);
                 this.loadDomains(domains);
             }
 
-            var cssContent = rule.substring(indexOfMask + mask.length);
+            let cssContent = rule.substring(indexOfMask + mask.length);
 
             if (!isInjectRule) {
                 // We need this for two things:
                 // 1. Convert uBlock-style CSS injection rules
                 // 2. Validate pseudo-classes
                 // https://github.com/AdguardTeam/AdguardForAndroid/issues/701
-                var pseudoClass = parsePseudoClass(cssContent);
-                if (pseudoClass !== null && ":style" == pseudoClass.name) {
+                const pseudoClass = parsePseudoClass(cssContent);
+                if (pseudoClass !== null && ":style" === pseudoClass.name) {
                     isInjectRule = true;
                     cssContent = convertCssInjectionRule(pseudoClass, cssContent);
                 } else if (pseudoClass !== null) {
@@ -200,7 +166,7 @@
 
             // Extended CSS selectors support
             // https://github.com/AdguardTeam/ExtendedCss
-            for (var i = 0; i < CssFilterRule.EXTENDED_CSS_MARKERS.length; i++) {
+            for (let i = 0; i < CssFilterRule.EXTENDED_CSS_MARKERS.length; i++) {
                 if (cssContent.indexOf(CssFilterRule.EXTENDED_CSS_MARKERS[i]) >= 0) {
                     isExtendedCss = true;
                 }
@@ -210,8 +176,6 @@
             this.extendedCss = isExtendedCss;
             this.cssSelector = cssContent;
         };
-
-        return constructor;
     })();
 
     CssFilterRule.prototype = Object.create(api.FilterRule.prototype);

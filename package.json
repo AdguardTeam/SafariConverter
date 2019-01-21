@@ -1,6 +1,6 @@
 {
   "name": "safari-converter",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Safari Content Blocker Converter",
   "scripts": {
     "build": "gulp buildConverter --require babel-register --gulpfile tasks",
@@ -19,7 +19,9 @@
   },
   "author": "adguard@adguard.com",
   "license": "LGPL-3.0",
-  "dependencies": {
+  "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-runtime": "^6.26.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
@@ -27,14 +29,10 @@
     "gulp-concat": "^2.6.1",
     "gulp-download2": "^1.0.2",
     "gulp-file": "^0.4.0",
-    "del":"^3.0.0",
-    "node-qunit-phantomjs": "^2.0.0",
+    "del": "^3.0.0",
+    "node-qunit-puppeteer": "^1.0.6",
+    "fs-extra": "^6.0.1",
     "download-file-sync": "^1.0.4",
-    "fs-extra": "^6.0.1"
-  },
-  "devDependencies": {
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-runtime": "^6.26.0",
     "qunit": "^2.6.0"
   }
 }

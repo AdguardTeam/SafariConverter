@@ -20,41 +20,25 @@
     'use strict';
 
     /**
-     * By the rules of AMO and addons.opera.com we cannot use remote scripts
-     * (and our JS injection rules could be considered as remote scripts).
-     *
-     * So, what we do:
-     * 1. Pre-compile all current JS rules to the add-on and mark them as 'local'. Other JS rules (new not pre-compiled) are maked as 'remote'.
-     * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
-     * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
-     * Note: LocalScriptRulesService may be undefined, in this case, we mark all rules as remote.
-     */
-    function getScriptSource(filterId, ruleText) {
-        return filterId == adguard.utils.filters.USER_FILTER_ID || api.LocalScriptRulesService && api.LocalScriptRulesService.isLocal(ruleText) ? 'local' : 'remote';
-    }
-
-    /**
      * JS injection rule:
      * http://adguard.com/en/filterrules.html#javascriptInjection
      */
-    var ScriptFilterRule = function (rule, filterId) {
+    const ScriptFilterRule = function (rule, filterId) {
 
         api.FilterRule.call(this, rule, filterId);
 
         this.script = null;
         this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
-        var mask = this.whiteListRule ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE : api.FilterRule.MASK_SCRIPT_RULE;
+        const mask = this.whiteListRule ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE : api.FilterRule.MASK_SCRIPT_RULE;
 
-        var indexOfMask = rule.indexOf(mask);
+        const indexOfMask = rule.indexOf(mask);
         if (indexOfMask > 0) {
             // domains are specified, parsing
-            var domains = rule.substring(0, indexOfMask);
+            const domains = rule.substring(0, indexOfMask);
             this.loadDomains(domains);
         }
 
         this.script = rule.substring(indexOfMask + mask.length);
-
-        this.scriptSource = getScriptSource(filterId, rule);
     };
 
     ScriptFilterRule.prototype = Object.create(api.FilterRule.prototype);
