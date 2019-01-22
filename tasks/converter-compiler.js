@@ -18,7 +18,6 @@ const compile = (done) => {
         './rules/base-filter-rule.js',
         './rules/filter-rule-builder.js',
         './rules/css-filter-rule.js',
-        './rules/script-filter-rule.js',
         './rules/url-filter-rule.js',
         './converter.js'
     ];

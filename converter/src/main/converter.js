@@ -57,7 +57,7 @@ const SafariContentBlockerConverter = (() =>{
     /**
      * Converter implementation.
      *
-     * @type {{convertCssFilterRule, convertScriptRule, convertUrlFilterRule, isSingleOption}}
+     * @type {{convertCssFilterRule, convertUrlFilterRule, isSingleOption}}
      */
     const AGRuleConverter = (() =>{
 
@@ -401,16 +401,6 @@ const SafariContentBlockerConverter = (() =>{
         };
 
         /**
-         * Converts script filter rule
-         *
-         * @param rule
-         */
-        const convertScriptRule = rule => {
-            // There is no way to convert these rules to safari format
-            throw new Error("Script-injection rule " + rule.ruleText + " cannot be converted");
-        };
-
-        /**
          * Validates url blocking rule and discards rules considered dangerous or invalid.
          */
         const validateUrlBlockingRule = rule => {
@@ -564,7 +554,6 @@ const SafariContentBlockerConverter = (() =>{
         // Expose AGRuleConverter API
         return {
             convertCssFilterRule: convertCssFilterRule,
-            convertScriptRule: convertScriptRule,
             convertUrlFilterRule: convertUrlFilterRule,
             isSingleOption: isSingleOption
         }
@@ -652,8 +641,6 @@ const SafariContentBlockerConverter = (() =>{
         let result;
         if (rule instanceof adguard.rules.CssFilterRule) {
             result = AGRuleConverter.convertCssFilterRule(rule);
-        } else if (rule instanceof adguard.rules.ScriptFilterRule) {
-            result = AGRuleConverter.convertScriptRule(rule);
         } else if (rule instanceof adguard.rules.UrlFilterRule) {
             result = AGRuleConverter.convertUrlFilterRule(rule);
         } else {

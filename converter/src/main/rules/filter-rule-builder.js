@@ -24,7 +24,7 @@
      *
      * @param ruleText Rule text
      * @param filterId Filter identifier
-     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule
      */
     const createRule = function (ruleText, filterId) {
 
@@ -41,9 +41,12 @@
                 StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_EXCEPTION_RULE) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
                 // Empty or comment, ignore
                 // Content rules are not supported
+                // Script rules are not supported
                 return null;
             }
 
@@ -53,10 +56,6 @@
 
             if (api.FilterRule.findRuleMarker(ruleText, api.CssFilterRule.RULE_MARKERS, api.CssFilterRule.RULE_MARKER_FIRST_CHAR)) {
                 return new api.CssFilterRule(ruleText, filterId);
-            }
-
-            if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.ScriptFilterRule(ruleText, filterId);
             }
 
             return new api.UrlFilterRule(ruleText, filterId);
