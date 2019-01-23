@@ -22,7 +22,7 @@
     /**
      * Base class for all filter rules
      */
-    var FilterRule = function (text, filterId) {
+    const FilterRule = function (text, filterId) {
         this.ruleText = text;
         this.filterId = filterId;
     };
@@ -42,13 +42,14 @@
                 return;
             }
 
-            var permittedDomains = null;
-            var restrictedDomains = null;
+            let permittedDomains = null;
+            let restrictedDomains = null;
 
-            var parts = domains.split(/[,|]/);
+            let parts = domains.split(/[,|]/);
             try {
-                for (var i = 0; i < parts.length; i++) {
-                    var domain = parts[i], domainName;
+                for (let i = 0; i < parts.length; i++) {
+                    const domain = parts[i];
+                    let domainName;
                     if (adguard.utils.strings.startWith(domain, "~")) {
                         domainName = adguard.utils.url.toPunyCode(domain.substring(1).trim());
                         if (!adguard.utils.strings.isEmpty(domainName)) {
@@ -73,22 +74,6 @@
 
             this.setPermittedDomains(permittedDomains);
             this.setRestrictedDomains(restrictedDomains);
-        },
-
-        getPermittedDomains: function () {
-            if (this.permittedDomain) {
-                return [this.permittedDomain];
-            } else {
-                return this.permittedDomains;
-            }
-        },
-
-        getRestrictedDomains: function () {
-            if (this.restrictedDomain) {
-                return [this.restrictedDomain];
-            } else {
-                return this.restrictedDomains;
-            }
         },
 
         setPermittedDomains: function (permittedDomains) {
@@ -122,33 +107,10 @@
         },
 
         /**
-         * Checks if rule is domain-sensitive
-         * @returns boolean true if $domain option is present. Otherwise false.
-         */
-        isDomainSensitive: function () {
-            return this.hasRestrictedDomains() || this.hasPermittedDomains();
-        },
-
-        /**
-         * Checks whether this rule is generic or domain specific
-         * @returns boolean true if rule is generic, otherwise false
-         */
-        isGeneric: function () {
-            return (!this.hasPermittedDomains());
-        },
-
-        /**
          * @returns boolean true if rule has permitted domains
          */
         hasPermittedDomains: function () {
             return (this.permittedDomain || (this.permittedDomains && this.permittedDomains.length > 0));
-        },
-
-        /**
-         * @returns boolean true if rule has restricted domains
-         */
-        hasRestrictedDomains: function () {
-            return (this.restrictedDomain || (this.restrictedDomains && this.restrictedDomains.length > 0));
         },
 
         /**
@@ -177,43 +139,6 @@
             }
 
             return true;
-        },
-
-        /**
-         * Adds restricted domains
-         *
-         * @param domains List of domains
-         */
-        addRestrictedDomains: function (domains) {
-            if (domains) {
-                if (this.hasPermittedDomains()) {
-                    var self = this;
-                    // If a rule already has permitted domains, we should check that
-                    // these restricted domains make any sense
-                    domains = domains.filter(function (domainName) {
-                        return self.isPermitted(domainName);
-                    });
-                }
-
-                var restrictedDomains = this.getRestrictedDomains();
-                restrictedDomains = adguard.utils.collections.removeDuplicates((restrictedDomains || []).concat(domains));
-                this.setRestrictedDomains(restrictedDomains);
-            }
-        },
-
-        /**
-         * Removes restricted domains
-         *
-         * @param domains List of domains
-         */
-        removeRestrictedDomains: function (domains) {
-            if (domains) {
-                var restrictedDomains = this.getRestrictedDomains();
-                for (var i = 0; i < domains.length; i++) {
-                    adguard.utils.collections.remove(restrictedDomains, domains[i]);
-                }
-                this.setRestrictedDomains(restrictedDomains);
-            }
         }
     };
 
@@ -231,7 +156,7 @@
             return false;
         }
 
-        for (var i = 0; i < substr.length; i++) {
+        for (let i = 0; i < substr.length; i++) {
             if (str.charAt(startIndex + i) !== substr.charAt(i)) {
                 return false;
             }
@@ -250,13 +175,13 @@
      */
     FilterRule.findRuleMarker = function (ruleText, markers, firstMarkerChar) {
 
-        var startIndex = ruleText.indexOf(firstMarkerChar);
+        const startIndex = ruleText.indexOf(firstMarkerChar);
         if (startIndex === -1) {
             return null;
         }
 
-        for (var i = 0; i < markers.length; i++) {
-            var marker = markers[i];
+        for (let i = 0; i < markers.length; i++) {
+            const marker = markers[i];
             if (startsAtIndexWith(ruleText, startIndex, marker)) {
                 return marker;
             }

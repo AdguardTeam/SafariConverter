@@ -16,12 +16,10 @@
  */
 
 /**
- * Namespace for adguard rules classes and utils
+ * Global adguard object
  */
-adguard.rules = (function () {
-
-    'use strict';
-
-    return {};
-
+const adguard = (function () { // jshint ignore:line
+    return {
+        rules: {}
+    };
 })();

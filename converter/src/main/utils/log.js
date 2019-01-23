@@ -21,9 +21,9 @@
 adguard.console = (function () {
 
     // Redefine if you need it
-    var CURRENT_LEVEL = "INFO";
+    const CURRENT_LEVEL = "INFO";
 
-    var LEVELS = {
+    const LEVELS = {
         ERROR: 1,
         WARN: 2,
         INFO: 3,
@@ -33,14 +33,14 @@ adguard.console = (function () {
     /**
      * Pretty-print javascript error
      */
-    var errorToString = function (error) {
+    const errorToString = function (error) {
         return error.toString() + "\nStack trace:\n" + error.stack;
     };
 
     /**
      * Prints log message
      */
-    var print = function (level, method, args) {
+    const print = function (level, method, args) {
         //check log level
         if (LEVELS[CURRENT_LEVEL] < LEVELS[level]) {
             return;
@@ -49,12 +49,12 @@ adguard.console = (function () {
             return;
         }
 
-        var str = args[0] + "";
+        const str = args[0] + "";
         args = Array.prototype.slice.call(args, 1);
-        var formatted = str.replace(/{(\d+)}/g, function (match, number) {
+        let formatted = str.replace(/{(\d+)}/g, function (match, number) {
 
-            if (typeof args[number] != "undefined") {
-                var value = args[number];
+            if (typeof args[number] !== "undefined") {
+                let value = args[number];
                 if (value instanceof Error) {
                     value = errorToString(value);
                 } else if (value && value.message) {
@@ -66,7 +66,7 @@ adguard.console = (function () {
             return match;
         });
 
-        var now = new Date();
+        const now = new Date();
         formatted = now.toISOString() + ": " + formatted;
         console[method](formatted);
     };

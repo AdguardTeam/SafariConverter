@@ -24,24 +24,29 @@
      *
      * @param ruleText Rule text
      * @param filterId Filter identifier
-     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule
      */
-    var createRule = function (ruleText, filterId) {
+    const createRule = function (ruleText, filterId) {
 
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
             return null;
         }
-        var rule = null;
+        const rule = null;
         try {
 
-            var StringUtils = adguard.utils.strings;
+            const StringUtils = adguard.utils.strings;
 
             if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT) ||
                 StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_EXCEPTION_RULE) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
                 // Empty or comment, ignore
                 // Content rules are not supported
+                // Script rules are not supported
                 return null;
             }
 
@@ -49,23 +54,11 @@
                 return new api.UrlFilterRule(ruleText, filterId);
             }
 
-            if (api.FilterRule.findRuleMarker(ruleText, api.ContentFilterRule.RULE_MARKERS, api.ContentFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
-                if (!responseContentFilteringSupported) {
-                    return null;
-                }
-                return new api.ContentFilterRule(ruleText, filterId);
-            }
-
             if (api.FilterRule.findRuleMarker(ruleText, api.CssFilterRule.RULE_MARKERS, api.CssFilterRule.RULE_MARKER_FIRST_CHAR)) {
                 return new api.CssFilterRule(ruleText, filterId);
             }
 
-            if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.ScriptFilterRule(ruleText, filterId);
-            }
-
-            return  new api.UrlFilterRule(ruleText, filterId);
+            return new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
             adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
         }
