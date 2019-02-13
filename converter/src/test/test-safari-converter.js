@@ -280,11 +280,6 @@ QUnit.test("CSS pseudo classes", function (assert) {
     assert.equal(0, result.convertedCount);
     assert.equal(2, result.errorsCount);
 
-    // Invalid pseudo class
-    result = SafariContentBlockerConverter.convertArray(['yandex.ru##test:has(.whatisthis)']);
-    assert.equal(0, result.convertedCount);
-    assert.equal(1, result.errorsCount);
-
     // Valid selectors
     result = SafariContentBlockerConverter.convertArray([
         'w3schools.com###main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)',

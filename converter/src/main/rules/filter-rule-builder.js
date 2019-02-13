@@ -23,10 +23,9 @@
      * Method that parses rule text and creates object of a suitable class.
      *
      * @param ruleText Rule text
-     * @param filterId Filter identifier
-     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule
+     * @returns Filter rule object.
      */
-    const createRule = function (ruleText, filterId) {
+    const createRule = function (ruleText) {
 
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
@@ -41,26 +40,27 @@
                 StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_EXCEPTION_RULE) ||
-                StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) ||
-                StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
                 // Empty or comment, ignore
                 // Content rules are not supported
-                // Script rules are not supported
                 return null;
             }
 
             if (StringUtils.startWith(ruleText, api.FilterRule.MASK_WHITE_LIST)) {
-                return new api.UrlFilterRule(ruleText, filterId);
+                return new api.UrlFilterRule(ruleText);
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.CssFilterRule.RULE_MARKERS, api.CssFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.CssFilterRule(ruleText, filterId);
+                return new api.CssFilterRule(ruleText);
             }
 
-            return new api.UrlFilterRule(ruleText, filterId);
+            if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
+                return new api.ScriptFilterRule(ruleText);
+            }
+
+            return new api.UrlFilterRule(ruleText);
         } catch (ex) {
-            adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
+            adguard.console.warn("Cannot create rule: {1}, cause {2}", ruleText, ex);
         }
 
         return null;
