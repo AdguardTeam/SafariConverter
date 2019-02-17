@@ -61,7 +61,6 @@ QUnit.test("Script rules exceptions", function (assert) {
 
     let rule, exceptionRule, result, converted, advancedBlocking;
 
-    //TODO: Fix script exceptions
     rule = new adguard.rules.ScriptFilterRule("#%#window.__gaq = undefined;");
     exceptionRule = new adguard.rules.ScriptFilterRule("example.com#@%#window.__gaq = undefined;");
 
@@ -71,16 +70,12 @@ QUnit.test("Script rules exceptions", function (assert) {
     assert.equal(converted.length, 0);
 
     advancedBlocking = JSON.parse(result.advancedBlocking);
-    assert.equal(advancedBlocking.length, 2);
+    assert.equal(advancedBlocking.length, 1);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
+    assert.equal(advancedBlocking[0].trigger['unless-domain'], "example.com");
     assert.equal(advancedBlocking[0].action.type, "script");
     assert.equal(advancedBlocking[0].action.script, "window.__gaq = undefined;");
-
-    assert.equal(advancedBlocking[1].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[1].trigger['if-domain'], "example.com");
-    assert.equal(advancedBlocking[1].action.type, "ignore-previous-rules");
-    assert.notOk(advancedBlocking[1].action.script);
 
     // jsinject rules
     rule = new adguard.rules.ScriptFilterRule('example.com#%#alert(1);', 0);
@@ -139,7 +134,6 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
 
-    console.log(result.advancedBlocking);
     advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
 

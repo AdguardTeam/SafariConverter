@@ -746,22 +746,23 @@ const SafariContentBlockerConverter = (() =>{
     };
 
     /**
-     * Apply css exceptions
+     * Apply exceptions
      * http://jira.performix.ru/browse/AG-8710
      *
-     * @param cssBlocking
-     * @param cssExceptions
+     * @param blockingItems
+     * @param exceptions
+     * @param actionValue action value (selector, script, css)
      * @private
      */
-    const applyCssExceptions = (cssBlocking, cssExceptions) => {
-        adguard.console.info('Applying ' + cssExceptions.length + ' css exceptions');
+    const applyActionExceptions = (blockingItems, exceptions, actionValue) => {
+        adguard.console.info(`Applying ${exceptions.length} ${actionValue} exceptions`);
 
         /**
          * Adds exception domain to the specified rule.
          * First it checks if rule has if-domain restriction.
          * If so - it may be that domain is redundant.
          */
-        const pushExceptionDomain = (domain, rule) =>{
+        const pushExceptionDomain = (domain, rule) => {
             const permittedDomains = rule.trigger["if-domain"];
             if (permittedDomains && permittedDomains.length) {
 
@@ -782,8 +783,8 @@ const SafariContentBlockerConverter = (() =>{
             ruleRestrictedDomains.push(domain);
         };
 
-        const rulesMap = arrayToMap(cssBlocking, 'action', 'selector');
-        const exceptionRulesMap = arrayToMap(cssExceptions, 'action', 'selector');
+        const rulesMap = arrayToMap(blockingItems, 'action', actionValue);
+        const exceptionRulesMap = arrayToMap(exceptions, 'action', actionValue);
 
         let exceptionsAppliedCount = 0;
         let exceptionsErrorsCount = 0;
@@ -812,7 +813,7 @@ const SafariContentBlockerConverter = (() =>{
         }
 
         const result = [];
-        cssBlocking.forEach(r =>{
+        blockingItems.forEach(r =>{
             if (r.trigger["if-domain"] && (r.trigger["if-domain"].length > 0) &&
                 r.trigger["unless-domain"] && (r.trigger["unless-domain"].length > 0)) {
                 adguard.console.debug('Safari does not support permitted and restricted domains in one rule');
@@ -823,8 +824,8 @@ const SafariContentBlockerConverter = (() =>{
             }
         });
 
-        adguard.console.info('Css exceptions applied: ' + exceptionsAppliedCount);
-        adguard.console.info('Css exceptions errors: ' + exceptionsErrorsCount);
+        adguard.console.info(`Exceptions ${actionValue} applied: ${exceptionsAppliedCount}`);
+        adguard.console.info(`Exceptions ${actionValue} errors: ${exceptionsErrorsCount}`);
         return result;
     };
 
@@ -919,8 +920,6 @@ const SafariContentBlockerConverter = (() =>{
             documentExceptions: [],
             // Script rules (#%#)
             script: [],
-            // Script rules exceptions (#@%#)
-            scriptExceptions: [],
             // JsInject exception ($jsinject)
             scriptJsInjectExceptions: [],
             // Extended css rules:
@@ -942,6 +941,10 @@ const SafariContentBlockerConverter = (() =>{
 
         // Extended css Elemhide rules (##)
         let extendedCssBlocking = [];
+
+        // Script rules (#%#)
+        let scriptRules = [];
+        const scriptExceptionRules = [];
 
         // $badfilter rules
         const badFilterExceptions = [];
@@ -994,10 +997,10 @@ const SafariContentBlockerConverter = (() =>{
                 } else if (item.action.type === 'css') {
                     extendedCssBlocking.push(item);
                 } else if (item.action.type === 'script') {
-                    contentBlocker.script.push(item);
+                    scriptRules.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' && agRule.script) {
                     // #@%# rules
-                    contentBlocker.scriptExceptions.push(item);
+                    scriptExceptionRules.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' &&
                     (item.action.selector && item.action.selector !== '')) {
                     // #@# rules
@@ -1027,7 +1030,7 @@ const SafariContentBlockerConverter = (() =>{
         }
 
         // Applying CSS exceptions
-        cssBlocking = applyCssExceptions(cssBlocking, cssExceptions);
+        cssBlocking = applyActionExceptions(cssBlocking, cssExceptions, 'selector');
         const cssCompact = compactCssRules(cssBlocking);
         if (!optimize) {
             contentBlocker.cssBlockingWide = cssCompact.cssBlockingWide;
@@ -1036,13 +1039,17 @@ const SafariContentBlockerConverter = (() =>{
         contentBlocker.cssBlockingDomainSensitive = cssCompact.cssBlockingDomainSensitive;
 
         // Applying CSS exceptions for extended css rules
-        extendedCssBlocking = applyCssExceptions(extendedCssBlocking, cssExceptions);
+        extendedCssBlocking = applyActionExceptions(extendedCssBlocking, cssExceptions, 'selector');
         const extendedCssCompact = compactCssRules(extendedCssBlocking);
         if (!optimize) {
             contentBlocker.extendedCssBlockingWide = extendedCssCompact.cssBlockingWide;
         }
         contentBlocker.extendedCssBlockingGenericDomainSensitive = extendedCssCompact.cssBlockingGenericDomainSensitive;
         contentBlocker.extendedCssBlockingDomainSensitive = extendedCssCompact.cssBlockingDomainSensitive;
+
+        // Applying script exceptions
+        scriptRules = applyActionExceptions(scriptRules, scriptExceptionRules, 'script');
+        contentBlocker.script = scriptRules;
 
         const convertedCount = rules.length - contentBlocker.errors.length;
         let message = 'Rules converted: ' + convertedCount + ' (' + contentBlocker.errors.length + ' errors)';
@@ -1059,7 +1066,6 @@ const SafariContentBlockerConverter = (() =>{
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
         message += '\nExceptions (important): ' + contentBlocker.importantExceptions.length;
         message += '\nExceptions (document): ' + contentBlocker.documentExceptions.length;
-        message += '\nExceptions (script): ' + contentBlocker.scriptExceptions.length;
         message += '\nExceptions (jsinject): ' + contentBlocker.scriptJsInjectExceptions.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
         adguard.console.info(message);
@@ -1103,7 +1109,6 @@ const SafariContentBlockerConverter = (() =>{
 
         let advancedBlocking = [];
         advancedBlocking = advancedBlocking.concat(contentBlocker.script);
-        advancedBlocking = advancedBlocking.concat(contentBlocker.scriptExceptions);
         advancedBlocking = advancedBlocking.concat(contentBlocker.scriptJsInjectExceptions);
         advancedBlocking = advancedBlocking.concat(contentBlocker.extendedCssBlockingWide);
         advancedBlocking = advancedBlocking.concat(contentBlocker.extendedCssBlockingGenericDomainSensitive);
@@ -1111,6 +1116,7 @@ const SafariContentBlockerConverter = (() =>{
         advancedBlocking = advancedBlocking.concat(contentBlocker.extendedCssBlockingDomainSensitive);
         advancedBlocking = advancedBlocking.concat(contentBlocker.cssElemhide);
         advancedBlocking = advancedBlocking.concat(contentBlocker.other);
+        advancedBlocking = advancedBlocking.concat(contentBlocker.importantExceptions);
         advancedBlocking = advancedBlocking.concat(contentBlocker.documentExceptions);
 
         adguard.console.info('Advanced Blocking length: ' + advancedBlocking.length);
