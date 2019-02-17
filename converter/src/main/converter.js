@@ -254,9 +254,6 @@ const SafariContentBlockerConverter = (() =>{
             if (isContentType(rule, contentTypes.WEBRTC)) {
                 throw new Error('$webrtc content type is not yet supported');
             }
-            if (isSingleOption(rule, adguard.rules.UrlFilterRule.options.JSINJECT)) {
-                throw new Error('$jsinject rules are ignored.');
-            }
             if (rule.getReplace()) {
                 throw new Error('$replace rules are ignored.');
             }
@@ -924,6 +921,8 @@ const SafariContentBlockerConverter = (() =>{
             script: [],
             // Script rules exceptions (#@%#)
             scriptExceptions: [],
+            // JsInject exception ($jsinject)
+            scriptJsInjectExceptions: [],
             // Extended css rules:
             // Extended css Elemhide rules (##) - wide generic rules
             extendedCssBlockingWide: [],
@@ -1010,6 +1009,10 @@ const SafariContentBlockerConverter = (() =>{
                     AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.ELEMHIDE)) {
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
+                } else if (item.action.type === 'ignore-previous-rules' &&
+                    AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.JSINJECT)) {
+                    // elemhide rules
+                    contentBlocker.scriptJsInjectExceptions.push(item);
                 } else {
                     // other exceptions
                     if (agRule.isImportant) {
@@ -1057,6 +1060,7 @@ const SafariContentBlockerConverter = (() =>{
         message += '\nExceptions (important): ' + contentBlocker.importantExceptions.length;
         message += '\nExceptions (document): ' + contentBlocker.documentExceptions.length;
         message += '\nExceptions (script): ' + contentBlocker.scriptExceptions.length;
+        message += '\nExceptions (jsinject): ' + contentBlocker.scriptJsInjectExceptions.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
         adguard.console.info(message);
 
@@ -1100,12 +1104,14 @@ const SafariContentBlockerConverter = (() =>{
         let advancedBlocking = [];
         advancedBlocking = advancedBlocking.concat(contentBlocker.script);
         advancedBlocking = advancedBlocking.concat(contentBlocker.scriptExceptions);
+        advancedBlocking = advancedBlocking.concat(contentBlocker.scriptJsInjectExceptions);
         advancedBlocking = advancedBlocking.concat(contentBlocker.extendedCssBlockingWide);
         advancedBlocking = advancedBlocking.concat(contentBlocker.extendedCssBlockingGenericDomainSensitive);
         advancedBlocking = advancedBlocking.concat(contentBlocker.cssBlockingGenericHideExceptions);
         advancedBlocking = advancedBlocking.concat(contentBlocker.extendedCssBlockingDomainSensitive);
         advancedBlocking = advancedBlocking.concat(contentBlocker.cssElemhide);
         advancedBlocking = advancedBlocking.concat(contentBlocker.other);
+        advancedBlocking = advancedBlocking.concat(contentBlocker.documentExceptions);
 
         adguard.console.info('Advanced Blocking length: ' + advancedBlocking.length);
 

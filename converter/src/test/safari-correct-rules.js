@@ -25,7 +25,6 @@ const rules = [
     '@@wfarm.yandex.net/$document',
     '@@.instantservice.com$document',
     '/addyn|*|adtech;',
-    '@@||hulu-jsinject.com$jsinject',
     '@@||test-document.com$document',
     '@@||test-urlblock.com$urlblock',
     '@@||test-elemhide.com$elemhide',
@@ -286,7 +285,7 @@ const safariCorrectRules = [
 ];
 
 function _checkResult(json, errors) {
-    const expectedErrorsCount = 4;
+    const expectedErrorsCount = 3;
     const expectedCssTrunkatedCount = 4;
 
     if (json === null) {
