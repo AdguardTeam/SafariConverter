@@ -1020,7 +1020,7 @@ const SafariContentBlockerConverter = (() =>{
                     // other exceptions
                     if (agRule.isImportant) {
                         contentBlocker.importantExceptions.push(item);
-                    } else if (agRule.isDocumentWhiteList()) {
+                    } else if (agRule.isDocumentWhiteList && agRule.isDocumentWhiteList()) {
                         contentBlocker.documentExceptions.push(item);
                     } else {
                         contentBlocker.other.push(item);
