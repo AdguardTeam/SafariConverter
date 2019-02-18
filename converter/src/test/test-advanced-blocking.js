@@ -9,7 +9,7 @@ QUnit.test("Script rules", function (assert) {
     const rule = new adguard.rules.ScriptFilterRule('example.org,example-more.com#%#alert(1);', 0);
     const ruleTwo = new adguard.rules.ScriptFilterRule("~test.com#%#alert(2);");
 
-    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo]);
+    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -37,7 +37,7 @@ QUnit.test("Extended Css rules", function (assert) {
     const rule = new adguard.rules.CssFilterRule('ksl.com#?#.queue:-abp-has(.sponsored)', 0);
     const ruleTwo = new adguard.rules.CssFilterRule('yelp.com#?#li[class^="domtags--li"]:-abp-has(a[href^="/adredir?"])');
 
-    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo]);
+    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -64,7 +64,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     rule = new adguard.rules.ScriptFilterRule("#%#window.__gaq = undefined;");
     exceptionRule = new adguard.rules.ScriptFilterRule("example.com#@%#window.__gaq = undefined;");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule]);
+    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 0);
@@ -81,7 +81,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     rule = new adguard.rules.ScriptFilterRule('example.com#%#alert(1);', 0);
     exceptionRule = new adguard.rules.UrlFilterRule("@@||example.com^$jsinject");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule]);
+    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 0);
@@ -102,7 +102,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     rule = new adguard.rules.ScriptFilterRule("example.com#%#alert(2);");
     exceptionRule = new adguard.rules.UrlFilterRule("@@||example.com^$document");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule]);
+    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
@@ -129,7 +129,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     rule = new adguard.rules.CssFilterRule("ksl.com#?#.queue:-abp-has(.sponsored)");
     exceptionRule = new adguard.rules.UrlFilterRule("@@||ksl.com^$elemhide");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule]);
+    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
@@ -152,7 +152,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     rule = new adguard.rules.CssFilterRule("ksl.com#?#.queue:-abp-has(.sponsored)");
     exceptionRule = new adguard.rules.UrlFilterRule("@@||ksl.com^$document");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule]);
+    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
@@ -173,6 +173,6 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
 });
 
 QUnit.test("Test single file converter", function (assert) {
-    const result = jsonFromFilters(['ksl.com#?#.queue:-abp-has(.sponsored)', 'example.org#%#alert(1);'], 100, true);
+    const result = jsonFromFilters(['ksl.com#?#.queue:-abp-has(.sponsored)', 'example.org#%#alert(1);'], 100, true, true);
     assert.ok(result);
 });
