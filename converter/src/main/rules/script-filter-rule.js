@@ -23,9 +23,9 @@
      * JS injection rule:
      * http://adguard.com/en/filterrules.html#javascriptInjection
      */
-    const ScriptFilterRule = function (rule, filterId) {
+    const ScriptFilterRule = function (rule) {
 
-        api.FilterRule.call(this, rule, filterId);
+        api.FilterRule.call(this, rule);
 
         this.script = null;
         this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);

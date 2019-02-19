@@ -212,9 +212,9 @@
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
      */
-    let UrlFilterRule = function (rule, filterId) {
+    let UrlFilterRule = function (rule) {
 
-        api.FilterRule.call(this, rule, filterId);
+        api.FilterRule.call(this, rule);
 
         // Content type masks
         this.permittedContentType = UrlFilterRule.contentTypes.ALL;

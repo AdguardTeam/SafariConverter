@@ -119,9 +119,9 @@
             };
         };
 
-        return function (rule, filterId) {
+        return function (rule) {
 
-            api.FilterRule.call(this, rule, filterId);
+            api.FilterRule.call(this, rule);
 
             let mask = api.FilterRule.findRuleMarker(rule, CssFilterRule.RULE_MARKERS, CssFilterRule.RULE_MARKER_FIRST_CHAR);
             if (!mask) {
