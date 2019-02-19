@@ -21,18 +21,27 @@
     /**
      * Helper class for creating regular expression from a simple wildcard-syntax used in basic filters
      */
-    var SimpleRegex = (function () {
+    api.SimpleRegex = (function () {
+
+        /**
+         * Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
+         * Please note, that this regular expression matches only ONE level of subdomains
+         * Using ([a-z0-9-.]+\\.)? instead increases memory usage by 10Mb
+         */
+        const URL_FILTER_REGEXP_START_URL = "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?";
+        /** Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp) */
+        const URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
         // Constants
-        var regexConfiguration = {
+        const regexConfiguration = {
             maskStartUrl: "||",
             maskPipe: "|",
             maskSeparator: "^",
             maskAnySymbol: "*",
 
             regexAnySymbol: ".*",
-            regexSeparator: "([^ a-zA-Z0-9.%]|$)",
-            regexStartUrl: "^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?",
+            regexSeparator: URL_FILTER_REGEXP_SEPARATOR,
+            regexStartUrl: URL_FILTER_REGEXP_START_URL,
             regexStartString: "^",
             regexEndString: "$"
         };
@@ -40,29 +49,25 @@
         // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/regexp
         // should be escaped . * + ? ^ $ { } ( ) | [ ] / \
         // except of * | ^
-        var specials = [
+        const specials = [
             '.', '+', '?', '$', '{', '}', '(', ')', '[', ']', '\\', '/'
         ];
-        var specialsRegex = new RegExp('[' + specials.join('\\') + ']', 'g');
+        const specialsRegex = new RegExp('[' + specials.join('\\') + ']', 'g');
 
         /**
          * Escapes regular expression string
          */
-        var escapeRegExp = function (str) {
-            return str.replace(specialsRegex, "\\$&");
-        };
+        const escapeRegExp = str => str.replace(specialsRegex, "\\$&");
 
         /**
          * Checks if string "str" starts with the specified "prefix"
          */
-        var startsWith = function (str, prefix) {
-            return str && str.indexOf(prefix) === 0;
-        };
+        const startsWith = (str, prefix) => str && str.indexOf(prefix) === 0;
 
         /**
          * Checks if string "str" ends with the specified "postfix"
          */
-        var endsWith = function (str, postfix) {
+        const endsWith = (str, postfix) => {
             if (!str || !postfix) {
                 return false;
             }
@@ -70,15 +75,15 @@
             if (str.endsWith) {
                 return str.endsWith(postfix);
             }
-            var t = String(postfix);
-            var index = str.lastIndexOf(t);
+            const t = String(postfix);
+            const index = str.lastIndexOf(t);
             return index >= 0 && index === str.length - t.length;
         };
 
         /**
          * Replaces all occurencies of a string "find" with "replace" str;
          */
-        var replaceAll = function (str, find, replace) {
+        const replaceAll = (str, find, replace) => {
             if (!str) {
                 return str;
             }
@@ -89,14 +94,14 @@
         /**
          * Creates regex
          */
-        var createRegexText = function (str) {
+        const createRegexText = str => {
             if (str === regexConfiguration.maskStartUrl ||
                 str === regexConfiguration.maskPipe ||
                 str === regexConfiguration.maskAnySymbol) {
                 return regexConfiguration.regexAnySymbol;
             }
 
-            var regex = escapeRegExp(str);
+            let regex = escapeRegExp(str);
 
             if (startsWith(regex, regexConfiguration.maskStartUrl)) {
                 regex = regex.substring(0, regexConfiguration.maskStartUrl.length) +
@@ -136,7 +141,5 @@
             regexConfiguration: regexConfiguration
         };
     })();
-
-    api.SimpleRegex = SimpleRegex;
 
 })(adguard.rules);

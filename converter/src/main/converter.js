@@ -46,14 +46,6 @@ const SafariContentBlockerConverter = (() =>{
      */
     const URL_FILTER_CSS_RULES = ".*";
     const URL_FILTER_SCRIPT_RULES = ".*";
-    /**
-     * Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
-     * Please note, that this regular expression matches only ONE level of subdomains
-     * Using ([a-z0-9-.]+\\.)? instead increases memory usage by 10Mb
-     */
-    const URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
-    /** Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp) */
-    const URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
     /**
      * Converter implementation.
@@ -1167,15 +1159,7 @@ const SafariContentBlockerConverter = (() =>{
     const convertArray = (rules, limit, optimize, advancedBlocking) =>{
         printVersionMessage();
 
-        // Temporarily change the configuration in order to generate more effective regular expressions
-        const regexConfiguration = adguard.rules.SimpleRegex.regexConfiguration;
-        const prevRegexStartUrl = regexConfiguration.regexStartUrl;
-        const prevRegexSeparator = regexConfiguration.regexSeparator;
-
         try {
-            regexConfiguration.regexStartUrl = URL_FILTER_REGEXP_START_URL;
-            regexConfiguration.regexSeparator = URL_FILTER_REGEXP_SEPARATOR;
-
             if (rules === null) {
                 adguard.console.error('Invalid argument rules');
                 return null;
@@ -1188,10 +1172,8 @@ const SafariContentBlockerConverter = (() =>{
 
             const contentBlocker = convertLines(rules, !!optimize, advancedBlocking);
             return createConversionResult(contentBlocker, limit, advancedBlocking);
-        } finally {
-            // Restore the regex configuration
-            regexConfiguration.regexStartUrl = prevRegexStartUrl;
-            regexConfiguration.regexSeparator = prevRegexSeparator;
+        } catch (e) {
+            adguard.console.error('Unexpected error: ' + e);
         }
     };
 
