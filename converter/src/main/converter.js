@@ -725,7 +725,9 @@ const SafariContentBlockerConverter = (() =>{
             }
 
             for (let i = 0; i < array.length; i++) {
-                array[i] = "*" + array[i];
+                if (!array[i].startsWith('*')) {
+                    array[i] = "*" + array[i];
+                }
             }
         };
 
@@ -1140,6 +1142,7 @@ const SafariContentBlockerConverter = (() =>{
             advancedBlocker = advancedBlocker.concat(contentBlocker.importantExceptions);
             advancedBlocker = advancedBlocker.concat(contentBlocker.documentExceptions);
 
+            applyDomainWildcards(advancedBlocker);
             adguard.console.info('Advanced Blocking length: ' + advancedBlocker.length);
 
             result.advancedBlocking = JSON.stringify(advancedBlocker, null, "\t");

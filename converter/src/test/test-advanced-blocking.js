@@ -19,15 +19,15 @@ QUnit.test("Script rules", function (assert) {
     assert.equal(advancedBlocking.length, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['if-domain'][0], "example-more.com");
-    assert.equal(advancedBlocking[0].trigger['if-domain'][1], "example.org");
+    assert.equal(advancedBlocking[0].trigger['if-domain'][0], "*example-more.com");
+    assert.equal(advancedBlocking[0].trigger['if-domain'][1], "*example.org");
     assert.notOk(advancedBlocking[0].trigger['unless-domain']);
     assert.equal(advancedBlocking[0].action.type, "script");
     assert.equal(advancedBlocking[0].action.script, "alert(1);");
 
     assert.equal(advancedBlocking[1].trigger['url-filter'], ".*");
     assert.notOk(advancedBlocking[1].trigger['if-domain']);
-    assert.equal(advancedBlocking[1].trigger['unless-domain'], "test.com");
+    assert.equal(advancedBlocking[1].trigger['unless-domain'], "*test.com");
     assert.equal(advancedBlocking[1].action.type, "script");
     assert.equal(advancedBlocking[1].action.script, "alert(2);");
 });
@@ -47,12 +47,12 @@ QUnit.test("Extended Css rules", function (assert) {
     assert.equal(advancedBlocking.length, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['if-domain'], "ksl.com");
+    assert.equal(advancedBlocking[0].trigger['if-domain'], "*ksl.com");
     assert.equal(advancedBlocking[0].action.type, "css");
     assert.equal(advancedBlocking[0].action.css, ".queue:-abp-has(.sponsored)");
 
     assert.equal(advancedBlocking[1].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[1].trigger['if-domain'], "yelp.com");
+    assert.equal(advancedBlocking[1].trigger['if-domain'], "*yelp.com");
     assert.equal(advancedBlocking[1].action.type, "css");
     assert.equal(advancedBlocking[1].action.css, "li[class^=\"domtags--li\"]:-abp-has(a[href^=\"/adredir?\"])");
 });
@@ -73,7 +73,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     assert.equal(advancedBlocking.length, 1);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['unless-domain'], "example.com");
+    assert.equal(advancedBlocking[0].trigger['unless-domain'], "*example.com");
     assert.equal(advancedBlocking[0].action.type, "script");
     assert.equal(advancedBlocking[0].action.script, "window.__gaq = undefined;");
 
@@ -90,7 +90,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     assert.equal(advancedBlocking.length, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['if-domain'], "example.com");
+    assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.com");
     assert.equal(advancedBlocking[0].action.type, "script");
     assert.equal(advancedBlocking[0].action.script, "alert(1);");
 
@@ -111,7 +111,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     assert.equal(advancedBlocking.length, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['if-domain'], "example.com");
+    assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.com");
     assert.equal(advancedBlocking[0].action.type, "script");
     assert.equal(advancedBlocking[0].action.script, "alert(2);");
 
@@ -138,7 +138,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     assert.equal(advancedBlocking.length, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['if-domain'], "ksl.com");
+    assert.equal(advancedBlocking[0].trigger['if-domain'], "*ksl.com");
     assert.equal(advancedBlocking[0].action.type, "css");
     assert.equal(advancedBlocking[0].action.css, ".queue:-abp-has(.sponsored)");
 
@@ -161,7 +161,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     assert.equal(advancedBlocking.length, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
-    assert.equal(advancedBlocking[0].trigger['if-domain'], "ksl.com");
+    assert.equal(advancedBlocking[0].trigger['if-domain'], "*ksl.com");
     assert.equal(advancedBlocking[0].action.type, "css");
     assert.equal(advancedBlocking[0].action.css, ".queue:-abp-has(.sponsored)");
 
