@@ -10,6 +10,7 @@
 * @param {} rules Rules to convert
 * @param {*} limit Max number of rules
 * @param {*} optimize True if we should apply additional optimization
+* @param {*} advancedBlocking True if we need advanced blocking json
 */
 var jsonFromFilters = (function () {
 
@@ -28,9 +29,9 @@ var jsonFromFilters = (function () {
  * End of the dependencies content 
  */
 
-    return function (rules, limit, optimize) {
+    return function (rules, limit, optimize, advancedBlocking) {
         try {
-            return SafariContentBlockerConverter.convertArray(rules, limit, optimize);
+            return SafariContentBlockerConverter.convertArray(rules, limit, optimize, advancedBlocking);
         } catch (ex) {
             console.log('Unexpected error: ' + ex);
         }

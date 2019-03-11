@@ -22,9 +22,8 @@
     /**
      * Base class for all filter rules
      */
-    const FilterRule = function (text, filterId) {
+    const FilterRule = function (text) {
         this.ruleText = text;
-        this.filterId = filterId;
     };
 
     FilterRule.prototype = {
