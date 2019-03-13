@@ -78,7 +78,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*test-elemhide.com"
             ]
         },
@@ -184,7 +184,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*www.any.gs"
             ]
         },
@@ -195,7 +195,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*test-urlblock.com"
             ]
         },
@@ -214,7 +214,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*hulu.com"
             ]
         },
@@ -225,7 +225,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*hulu.com"
             ]
         },
@@ -236,7 +236,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*hulu.com"
             ]
         },
@@ -247,7 +247,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*wfarm.yandex.net"
             ]
         },
@@ -266,7 +266,7 @@ const safariCorrectRules = [
     {
         "trigger": {
             "url-filter": URL_FILTER_ANY_URL,
-            "if-domain": [
+            "if-top-url": [
                 "*test-document.com"
             ]
         },

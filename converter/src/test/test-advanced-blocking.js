@@ -116,7 +116,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     assert.equal(advancedBlocking[0].action.script, "alert(2);");
 
     assert.equal(advancedBlocking[1].trigger['url-filter'], "^[htpsw]+:\\/\\/");
-    assert.equal(advancedBlocking[1].trigger['if-domain'][0], "*example.com");
+    assert.equal(advancedBlocking[1].trigger['if-top-url'][0], "*example.com");
     assert.equal(advancedBlocking[1].action.type, "ignore-previous-rules");
     assert.notOk(advancedBlocking[1].action.script);
 });
@@ -143,7 +143,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     assert.equal(advancedBlocking[0].action.css, ".queue:-abp-has(.sponsored)");
 
     assert.equal(advancedBlocking[1].trigger['url-filter'], "^[htpsw]+:\\/\\/");
-    assert.equal(advancedBlocking[1].trigger['if-domain'][0], "*ksl.com");
+    assert.equal(advancedBlocking[1].trigger['if-top-url'][0], "*ksl.com");
     assert.equal(advancedBlocking[1].action.type, "ignore-previous-rules");
     assert.notOk(advancedBlocking[1].action.script);
     assert.notOk(advancedBlocking[1].action.css);
@@ -166,7 +166,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     assert.equal(advancedBlocking[0].action.css, ".queue:-abp-has(.sponsored)");
 
     assert.equal(advancedBlocking[1].trigger['url-filter'], "^[htpsw]+:\\/\\/");
-    assert.equal(advancedBlocking[1].trigger['if-domain'][0], "*ksl.com");
+    assert.equal(advancedBlocking[1].trigger['if-top-url'][0], "*ksl.com");
     assert.equal(advancedBlocking[1].action.type, "ignore-previous-rules");
     assert.notOk(advancedBlocking[1].action.script);
     assert.notOk(advancedBlocking[1].action.css);
