@@ -125,27 +125,17 @@ const SafariContentBlockerConverter = (() =>{
          * @param included
          * @param excluded
          * @param trigger
-         * @param useTopUrl
          */
-        const writeDomainOptions = (included, excluded, trigger, useTopUrl) => {
+        const writeDomainOptions = (included, excluded, trigger) => {
             if (included.length > 0 && excluded.length > 0) {
                 throw new Error('Safari does not support both permitted and restricted domains');
             }
 
             if (included.length > 0) {
-                if (useTopUrl) {
-                    trigger["if-top-url"] = included;
-                } else {
-                    trigger["if-domain"] = included;
-                }
+                trigger["if-domain"] = included;
             }
-
             if (excluded.length > 0) {
-                if (useTopUrl) {
-                    trigger["unless-top-url"] = excluded;
-                } else {
-                    trigger["unless-domain"] = excluded;
-                }
+                trigger["unless-domain"] = excluded;
             }
         };
 
@@ -470,7 +460,7 @@ const SafariContentBlockerConverter = (() =>{
                     const excluded = [];
 
                     included.push(domain);
-                    writeDomainOptions(included, excluded, result.trigger, true);
+                    writeDomainOptions(included, excluded, result.trigger);
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
@@ -745,8 +735,6 @@ const SafariContentBlockerConverter = (() =>{
             if (rule.trigger) {
                 addWildcard(rule.trigger["if-domain"]);
                 addWildcard(rule.trigger["unless-domain"]);
-                addWildcard(rule.trigger["if-top-url"]);
-                addWildcard(rule.trigger["unless-top-url"]);
             }
         });
     };

@@ -235,7 +235,7 @@ QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
 
     assert.equal(converted[2].action.type, "ignore-previous-rules");
     assert.equal(converted[2].trigger["url-filter"], URL_FILTER_ANY_URL);
-    assert.equal(converted[2].trigger["if-top-url"], '*example.org');
+    assert.equal(converted[2].trigger["if-domain"], '*example.org');
 });
 
 QUnit.test("Convert cyrillic rules", function (assert) {
@@ -355,7 +355,7 @@ QUnit.test("UpperCase domains", function (assert) {
     const converted = JSON.parse(result.converted);
     assert.equal(1, converted.length);
 
-    assert.equal(converted[0].trigger["if-top-url"], "*uppercase.test");
+    assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
 });
 
 QUnit.test("CSP rules", function (assert) {
@@ -384,7 +384,7 @@ QUnit.test("Elemhide rules", function (assert) {
     assert.equal(converted[0].action.type, "css-display-none");
 
     assert.equal(converted[1].trigger["url-filter"], URL_FILTER_ANY_URL);
-    assert.equal(converted[1].trigger["if-top-url"], "*lenta.ru");
+    assert.equal(converted[1].trigger["if-domain"], "*lenta.ru");
     assert.equal(converted[1].action.type, "ignore-previous-rules");
 
     assert.equal(converted[2].trigger["url-filter"], "https:\\/\\/icdn\\.lenta\\.ru\\/images\\/2017\\/04\\/10\\/16\\/20170410160659586\\/top7_f07b6db166774abba29e0de2e335f50a\\.jpg");
@@ -420,7 +420,7 @@ QUnit.test("Important modifier rules sorting order", function(assert) {
 
     assert.equal(converted[4].action.type, "ignore-previous-rules");
     assert.equal(converted[4].trigger["url-filter"], URL_FILTER_ANY_URL);
-    assert.equal(converted[4].trigger["if-top-url"], "*example-url-block-exception-document.org");
+    assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
 });
 
 QUnit.test("BadFilter rules", function (assert) {
