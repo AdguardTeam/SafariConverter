@@ -205,7 +205,8 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_REGEXP_START_URL + "hulu\\.com\\/embed"
+            "url-filter": URL_FILTER_ANY_URL,
+            "if-top-url": URL_FILTER_REGEXP_START_URL + "hulu\\.com\\/embed"
         },
         "action": {
             "type": "ignore-previous-rules"

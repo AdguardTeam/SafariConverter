@@ -199,7 +199,8 @@ QUnit.test("Generichide rules", function (assert) {
 
     const convertedRule = converted[0];
     assert.equal(convertedRule.action.type, "ignore-previous-rules");
-    assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_REGEXP_START_URL + 'hulu\\.com\\/page');
+    assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_ANY_URL);
+    assert.equal(convertedRule.trigger["if-top-url"], URL_FILTER_REGEXP_START_URL + 'hulu\\.com\\/page');
 });
 
 QUnit.test("Generic domain sensitive rules", function (assert) {
@@ -435,6 +436,20 @@ QUnit.test("BadFilter rules", function (assert) {
     const converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
     assert.equal(converted[0].trigger['url-filter'], URL_FILTER_REGEXP_START_URL + "test\\.org[/:&?]?");
+
+});
+
+QUnit.test("If-top-url cases", function (assert) {
+
+    const rule = new adguard.rules.UrlFilterRule('@@||example.org/path$elemhide', 0);
+    const result = SafariContentBlockerConverter.convertArray([rule]);
+    assert.equal(result.errorsCount, 0);
+
+    const converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+    assert.equal(converted[0].trigger['if-top-url'], URL_FILTER_REGEXP_START_URL + "example\\.org\\/path");
+    assert.equal(converted[0].trigger['url-filter'], URL_FILTER_ANY_URL);
+    assert.equal(converted[0].action.type, "ignore-previous-rules");
 
 });
 
