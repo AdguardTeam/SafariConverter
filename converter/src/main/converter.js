@@ -438,10 +438,6 @@ const SafariContentBlockerConverter = (() =>{
                     }
 
                     const parseDomainResult = parseRuleDomain(rule.getUrlRuleText());
-                    if (parseDomainResult === null || parseDomainResult.domain === null) {
-                        adguard.console.debug('Error parse domain from rule: ' + rule.ruleText);
-                        return;
-                    }
 
                     if (parseDomainResult !== null &&
                         parseDomainResult.path !== null &&
@@ -450,17 +446,21 @@ const SafariContentBlockerConverter = (() =>{
                         // http://jira.performix.ru/browse/AG-8664
                         adguard.console.debug('Whitelist special warning for rule: ' + rule.ruleText);
 
-                        // Fill if-top-url
-                        result.trigger["if-top-url"] = result.trigger["url-filter"];
-                    } else {
-                        const domain = parseDomainResult.domain;
-
-                        const included = [];
-                        const excluded = [];
-
-                        included.push(domain);
-                        writeDomainOptions(included, excluded, result.trigger);
+                        return;
                     }
+
+                    if (parseDomainResult === null || parseDomainResult.domain === null) {
+                        adguard.console.debug('Error parse domain from rule: ' + rule.ruleText);
+                        return;
+                    }
+
+                    const domain = parseDomainResult.domain;
+
+                    const included = [];
+                    const excluded = [];
+
+                    included.push(domain);
+                    writeDomainOptions(included, excluded, result.trigger);
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
