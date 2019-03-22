@@ -275,13 +275,8 @@ QUnit.test("Convert regexp rules", function (assert) {
 });
 
 QUnit.test("CSS pseudo classes", function (assert) {
-    // :style should be ignored
-    var result = SafariContentBlockerConverter.convertArray(['yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)']);
-    assert.equal(0, result.convertedCount);
-    assert.equal(2, result.errorsCount);
-
     // Valid selectors
-    result = SafariContentBlockerConverter.convertArray([
+    var result = SafariContentBlockerConverter.convertArray([
         'w3schools.com###main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)',
         'w3schools.com###:root div.ads',
         "w3schools.com###body div[attr='test']:first-child  div",

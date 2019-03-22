@@ -176,3 +176,21 @@ QUnit.test("Test single file converter", function (assert) {
     const result = jsonFromFilters(['ksl.com#?#.queue:-abp-has(.sponsored)', 'example.org#%#alert(1);'], 100, true, true);
     assert.ok(result);
 });
+
+QUnit.test("Cosmetic css rules", function (assert) {
+    const rule = new adguard.rules.CssFilterRule('filmitorrent.xyz#$#.content { margin-top: 0!important; }');
+
+    const result = SafariContentBlockerConverter.convertArray([rule], null, false, true);
+    assert.equal(result.errorsCount, 0);
+
+    const converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 0);
+
+    const advancedBlocking = JSON.parse(result.advancedBlocking);
+    assert.equal(advancedBlocking.length, 1);
+
+    assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
+    assert.equal(advancedBlocking[0].trigger['if-domain'], "*filmitorrent.xyz");
+    assert.equal(advancedBlocking[0].action.type, "css");
+    assert.equal(advancedBlocking[0].action.css, ".content { margin-top: 0!important; }");
+});
