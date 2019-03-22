@@ -362,12 +362,6 @@ const SafariContentBlockerConverter = (() =>{
          * @return {*}
          */
         const convertCssFilterRule = rule => {
-
-            if (rule.isInjectRule && rule.isInjectRule === true) {
-                // There is no way to convert these rules to safari format
-                throw new Error("CSS-injection rule " + rule.ruleText + " cannot be converted");
-            }
-
             const result = {
                 trigger: {
                     "url-filter": URL_FILTER_CSS_RULES
@@ -377,7 +371,7 @@ const SafariContentBlockerConverter = (() =>{
                 action: {}
             };
 
-            if (rule.extendedCss) {
+            if (rule.extendedCss || (rule.isInjectRule && rule.isInjectRule === true)) {
                 result.action.type = "css";
                 result.action.css = rule.cssSelector;
             } else {
