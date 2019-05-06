@@ -382,7 +382,21 @@ const SafariContentBlockerConverter = (() =>{
             setWhiteList(rule, result);
             addDomainOptions(result.trigger, rule);
 
+            validateCssFilterRule(result);
+
             return result;
+        };
+
+        /**
+         * Validates url blocking rule and discards rules considered dangerous or invalid.
+         *
+         * @param rule
+         */
+        const validateCssFilterRule = rule => {
+            if (rule.action.type === "css" &&
+                rule.action.css.includes("url(")) {
+                throw new Error("Urls are not allowed in css styles");
+            }
         };
 
         /**
