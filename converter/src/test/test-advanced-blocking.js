@@ -194,3 +194,16 @@ QUnit.test("Cosmetic css rules", function (assert) {
     assert.equal(advancedBlocking[0].action.type, "css");
     assert.equal(advancedBlocking[0].action.css, ".content { margin-top: 0!important; }");
 });
+
+QUnit.test("Cosmetic css rules invalids", function (assert) {
+    const rule = new adguard.rules.CssFilterRule('filmitorrent.xyz#$#.content { url("http://example.com/style.css") }');
+
+    const result = SafariContentBlockerConverter.convertArray([rule], null, false, true);
+    assert.equal(result.errorsCount, 1);
+
+    const converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 0);
+
+    const advancedBlocking = JSON.parse(result.advancedBlocking);
+    assert.equal(advancedBlocking.length, 0);
+});
