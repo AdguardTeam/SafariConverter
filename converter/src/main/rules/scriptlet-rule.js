@@ -152,7 +152,7 @@
         domain && this.loadDomains(domain);
         const parseResult = parseRule(ruleText);
         this.scriptlet = parseResult.name;
-        this.scriptletParam =  parseResult;
+        this.scriptletParam =  JSON.stringify(parseResult);
     };
 
     /**

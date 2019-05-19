@@ -234,9 +234,7 @@ QUnit.test("Scriptlet adguard rule", function (assert) {
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.org");
     assert.equal(advancedBlocking[0].action.type, "scriptlet");
     assert.equal(advancedBlocking[0].action.scriptlet, "abort-on-property-read");
-    assert.equal(advancedBlocking[0].action.scriptletParam.name, "abort-on-property-read");
-    assert.equal(advancedBlocking[0].action.scriptletParam.args.length, 1);
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[0], 'I10C');
+    assert.equal(advancedBlocking[0].action.scriptletParam, "{\"name\":\"abort-on-property-read\",\"args\":[\"I10C\"]}");
 });
 
 QUnit.test("Scriptlet exception adguard rule", function (assert) {
@@ -274,21 +272,13 @@ QUnit.test("Composite rule", function (assert) {
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.org");
     assert.equal(advancedBlocking[0].action.type, "scriptlet");
     assert.equal(advancedBlocking[0].action.scriptlet, "abp-hide-if-has-and-matches-style");
-    assert.equal(advancedBlocking[0].action.scriptletParam.name, "abp-hide-if-has-and-matches-style");
-    assert.equal(advancedBlocking[0].action.scriptletParam.args.length, 3);
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[0], 'd[id^=\\\"_\\\"]');
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[1], 'div > s');
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[2], 'display: none');
+    assert.equal(advancedBlocking[0].action.scriptletParam, "{\"name\":\"abp-hide-if-has-and-matches-style\",\"args\":[\"d[id^=\\\\\\\"_\\\\\\\"]\",\"div > s\",\"display: none\"]}");
 
     assert.equal(advancedBlocking[1].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[1].trigger['if-domain'], "*example.org");
     assert.equal(advancedBlocking[1].action.type, "scriptlet");
     assert.equal(advancedBlocking[1].action.scriptlet, "abp-hide-if-contains");
-    assert.equal(advancedBlocking[1].action.scriptletParam.name, "abp-hide-if-contains");
-    assert.equal(advancedBlocking[1].action.scriptletParam.args.length, 3);
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[0], 'd[id^=\\\"_\\\"]');
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[1], 'div > s');
-    assert.equal(advancedBlocking[0].action.scriptletParam.args[2], 'display: none');
+    assert.equal(advancedBlocking[1].action.scriptletParam, "{\"name\":\"abp-hide-if-contains\",\"args\":[\"/.*/\",\".p\",\"a[href^=\\\\\\\"/ad__c?\\\\\\\"]\"]}");
 });
 
 QUnit.module('Rule converter');
