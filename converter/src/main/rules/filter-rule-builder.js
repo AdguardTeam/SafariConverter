@@ -30,18 +30,6 @@
             return false;
         }
 
-        // uBO scriptlet injections
-        if (ruleText.includes('##script:inject(') || ruleText.includes('##+js(')) {
-            return false;
-        }
-
-        // Check ABP-snippets
-        if (ruleText.includes('#$#')) {
-            if (!/#\$#.+{.*}\s*$/.test(ruleText)) {
-                return false;
-            }
-        }
-
         return true;
     };
 
@@ -51,7 +39,7 @@
      * @param ruleText Rule text
      * @returns Filter rule object.
      */
-    const createRule = function (ruleText) {
+    const _createRule = function (ruleText) {
 
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
@@ -85,7 +73,9 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.ScriptFilterRule(ruleText);
+                return api.ScriptletRule.isAdguardScriptletRule(ruleText)
+                    ? new api.ScriptletRule(ruleText)
+                    : new api.ScriptFilterRule(ruleText);
             }
 
             return new api.UrlFilterRule(ruleText);
@@ -94,6 +84,22 @@
         }
 
         return null;
+    };
+
+    /**
+     * Convert rules to AdGuard syntax and create rule
+     *
+     * @param {string} ruleText Rule text
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     */
+    const createRule = (ruleText) => {
+        const convertedRule = api.ruleConverter.convertRule(ruleText);
+        if (Array.isArray(convertedRule)) {
+            const rules = convertedRule.map(rt => _createRule(rt));
+            return new api.CompositeRule(ruleText, rules);
+        }
+
+        return _createRule(convertedRule);
     };
 
     api.builder = {

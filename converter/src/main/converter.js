@@ -46,6 +46,7 @@ const SafariContentBlockerConverter = (() =>{
      */
     const URL_FILTER_CSS_RULES = ".*";
     const URL_FILTER_SCRIPT_RULES = ".*";
+    const URL_FILTER_SCRIPTLET_RULES = ".*";
 
     /**
      * Converter implementation.
@@ -572,12 +573,36 @@ const SafariContentBlockerConverter = (() =>{
             return result;
         };
 
+        /**
+         * Converts scriptlet rule
+         *
+         * @param rule
+         */
+        const convertScriptletRule = rule => {
+            const result = {
+                trigger: {
+                    "url-filter": URL_FILTER_SCRIPTLET_RULES
+                },
+                action: {
+                    type: "scriptlet",
+                    scriptlet: rule.scriptlet,
+                    scriptletParam: rule.scriptletParam
+                }
+            };
+
+            setWhiteList(rule, result);
+            addDomainOptions(result.trigger, rule);
+
+            return result;
+        };
+
         // Expose AGRuleConverter API
         return {
-            convertCssFilterRule: convertCssFilterRule,
-            convertUrlFilterRule: convertUrlFilterRule,
-            convertScriptFilterRule: convertScriptFilterRule,
-            isSingleOption: isSingleOption
+            convertCssFilterRule,
+            convertUrlFilterRule,
+            convertScriptFilterRule,
+            convertScriptletRule,
+            isSingleOption
         }
     })();
 
@@ -667,6 +692,8 @@ const SafariContentBlockerConverter = (() =>{
             result = AGRuleConverter.convertUrlFilterRule(rule);
         } else if (rule instanceof adguard.rules.ScriptFilterRule) {
             result = AGRuleConverter.convertScriptFilterRule(rule);
+        } else if (rule instanceof adguard.rules.ScriptletRule) {
+            result = AGRuleConverter.convertScriptletRule(rule);
         } else {
             throw new Error('Rule is not supported: ' + rule);
         }
@@ -915,7 +942,11 @@ const SafariContentBlockerConverter = (() =>{
                 if (rule.isBadFilter && rule.isBadFilter()) {
                     badFilterExceptions.push(rule.badFilter);
                 } else {
-                    agRules.push(rule);
+                    if (rule instanceof adguard.rules.CompositeRule) {
+                        rule.rules.forEach(r => agRules.push(r));
+                    } else {
+                        agRules.push(rule);
+                    }
                 }
             }
         }
@@ -969,6 +1000,8 @@ const SafariContentBlockerConverter = (() =>{
             extendedCssBlockingGenericDomainSensitive: [],
             // Elemhide rules (##) with domain restrictions
             extendedCssBlockingDomainSensitive: [],
+            // Scriptlet rules (#%#//scriptlet)
+            scriptlets: [],
             // Errors
             errors: []
         };
@@ -983,6 +1016,10 @@ const SafariContentBlockerConverter = (() =>{
         // Script rules (#%#)
         let scriptRules = [];
         const scriptExceptionRules = [];
+
+        // Scriptlets
+        let scriptlets = [];
+        const scriptletsExceptions = [];
 
         const parsedRules = parseAGRules(rules, contentBlocker.errors);
 
@@ -1019,6 +1056,11 @@ const SafariContentBlockerConverter = (() =>{
                 } else if (item.action.type === 'ignore-previous-rules' && agRule.script) {
                     // #@%# rules
                     scriptExceptionRules.push(item);
+                } else if (item.action.type === 'scriptlet' && advancedBlocking) {
+                    scriptlets.push(item);
+                } else if (item.action.type === 'ignore-previous-rules' && agRule.scriptlet) {
+                    // #@%#//scriptlet
+                    scriptletsExceptions.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' &&
                     (item.action.selector && item.action.selector !== '')) {
                     // #@# rules
@@ -1070,6 +1112,9 @@ const SafariContentBlockerConverter = (() =>{
             // Applying script exceptions
             scriptRules = applyActionExceptions(scriptRules, scriptExceptionRules, 'script');
             contentBlocker.script = scriptRules;
+
+            scriptlets = applyActionExceptions(scriptlets, scriptletsExceptions, 'scriptlet');
+            contentBlocker.scriptlets = scriptlets;
         }
 
         const convertedCount = rules.length - contentBlocker.errors.length;
@@ -1081,6 +1126,7 @@ const SafariContentBlockerConverter = (() =>{
         message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingGenericHideExceptions.length;
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nScript rules: ' + contentBlocker.script.length;
+        message += '\nScriptlets rules: ' + contentBlocker.scriptlets.length;
         message += '\nExtended Css Elemhide rules (wide): ' + contentBlocker.extendedCssBlockingWide.length;
         message += '\nExtended Css Elemhide rules (generic domain sensitive): ' + contentBlocker.extendedCssBlockingGenericDomainSensitive.length;
         message += '\nExtended Css Elemhide rules (domain-sensitive): ' + contentBlocker.extendedCssBlockingDomainSensitive.length;
@@ -1140,6 +1186,7 @@ const SafariContentBlockerConverter = (() =>{
         if (advancedBlocking) {
             let advancedBlocker = [];
             advancedBlocker = advancedBlocker.concat(contentBlocker.script);
+            advancedBlocker = advancedBlocker.concat(contentBlocker.scriptlets);
             advancedBlocker = advancedBlocker.concat(contentBlocker.scriptJsInjectExceptions);
             advancedBlocker = advancedBlocker.concat(contentBlocker.extendedCssBlockingWide);
             advancedBlocker = advancedBlocker.concat(contentBlocker.extendedCssBlockingGenericDomainSensitive);
