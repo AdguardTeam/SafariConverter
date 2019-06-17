@@ -30,18 +30,6 @@
             return false;
         }
 
-        // uBO scriptlet injections
-        if (ruleText.includes('##script:inject(') || ruleText.includes('##+js(')) {
-            return false;
-        }
-
-        // Check ABP-snippets
-        if (ruleText.includes('#$#')) {
-            if (!/#\$#.+{.*}\s*$/.test(ruleText)) {
-                return false;
-            }
-        }
-
         return true;
     };
 
@@ -51,7 +39,7 @@
      * @param ruleText Rule text
      * @returns Filter rule object.
      */
-    const createRule = function (ruleText) {
+    const _createRule = function (ruleText) {
 
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
@@ -85,7 +73,9 @@
             }
 
             if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
-                return new api.ScriptFilterRule(ruleText);
+                return api.ScriptletRule.isAdguardScriptletRule(ruleText)
+                    ? new api.ScriptletRule(ruleText)
+                    : new api.ScriptFilterRule(ruleText);
             }
 
             return new api.UrlFilterRule(ruleText);
@@ -94,6 +84,45 @@
         }
 
         return null;
+    };
+
+    /**
+     * Convert rules to AdGuard syntax and create rule
+     *
+     * @param {string} ruleText Rule text
+     * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
+     */
+    const createRule = (ruleText) => {
+        let conversionResult = null;
+        try {
+            conversionResult = api.ruleConverter.convertRule(ruleText);
+        } catch (ex) {
+            adguard.console.debug('Cannot convert rule: {1}, cause {2}', ruleText, ex);
+        }
+
+        if (!conversionResult) {
+            return null;
+        }
+
+        if (Array.isArray(conversionResult)) {
+            const rules = conversionResult
+                .map(rt => _createRule(rt))
+                .filter(rule => rule !== null);
+
+            // composite rule shouldn't be with without rules inside it
+            if (rules.length === 0) {
+                return null;
+            }
+
+            return new api.CompositeRule(ruleText, rules);
+        }
+        const rule = _createRule(conversionResult);
+        if (conversionResult !== ruleText) {
+            rule.ruleText = ruleText;
+            rule.convertedRuleText = conversionResult;
+        }
+
+        return rule;
     };
 
     api.builder = {

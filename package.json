@@ -1,6 +1,6 @@
 {
   "name": "safari-converter",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "description": "Safari Content Blocker Converter",
   "scripts": {
     "build": "gulp buildConverter --require babel-register --gulpfile tasks",

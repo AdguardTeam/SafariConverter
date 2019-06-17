@@ -16,10 +16,13 @@ const compile = (done) => {
         './utils/log.js',
         './utils/simple-regex.js',
         './rules/base-filter-rule.js',
+        './rules/rule-converter.js',
         './rules/filter-rule-builder.js',
         './rules/css-filter-rule.js',
         './rules/url-filter-rule.js',
         './rules/script-filter-rule.js',
+        './rules/scriptlet-rule.js',
+        './rules/composite-rule.js',
         './converter.js'
     ];
 

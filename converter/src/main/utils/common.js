@@ -107,6 +107,16 @@ adguard.utils = (function () {
         },
 
         /**
+         * Get string before regexp first match
+         * @param {string} str
+         * @param {RegExp} rx
+         */
+        getBeforeRegExp: function (str, rx) {
+            let index = str.search(rx);
+            return str.substring(0, index);
+        },
+
+        /**
          * Look for any symbol from "chars" array starting at "start" index or from the start of the string
          *
          * @param str   String to search

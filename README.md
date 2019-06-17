@@ -15,7 +15,7 @@ Converts filter rules in AdGuard format to the format supported by Safari.
 - [nodejs](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/en/docs/install/)
 
-Install local dependencies by runnning:
+Install local dependencies by running:
 ```
     yarn install
 ```
@@ -38,6 +38,34 @@ Compiles converter and dependencies to one single file in `/build` directory.
     yarn convert --1,2,3,4,11,12
 ```
 
+### How to use converter:
+
+```
+    const result = SafariContentBlockerConverter.convertArray([ruleOne, ruleTwo], rulesLimit, optimize, advancedBlocking);
+```
+
+The result contains following properties:
+- totalConvertedCount: length of content blocker
+- convertedCount: length after reducing to limit if provided
+- errorsCount: errors count
+- overLimit: is limit exceeded flag
+- converted: string of content blocker rules
+- advancedBlocking: string of advanced blocking rules
+
+### Supported AdGuard rules types:
+
+#### Basic content blocker format:
+- Elemhide rules (##)
+- Elemhide exceptions
+- Url blocking rules
+- Url blocking exceptions
+
+#### Extended Advanced blocking types:
+- Script rules (#%#)
+- Script rules exceptions
+- Extended css elemhide rules (##)
+- Scriptlet rules (#%#//scriptlet)
+- Scriptlet rules exceptions
 
 ## Safari Content Blocker Tester
 
