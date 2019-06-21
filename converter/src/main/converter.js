@@ -1224,7 +1224,7 @@ const SafariContentBlockerConverter = (() =>{
             }
 
             if (rules.length === 0) {
-                adguard.console.info('No rules presented for convertation');
+                adguard.console.info('No rules presented for conversion');
                 return null;
             }
 

@@ -289,7 +289,7 @@ function _checkResult(json, errors) {
     const expectedCssTrunkatedCount = 4;
 
     if (json === null) {
-        errors.push('Convertation failed!');
+        errors.push('Conversion failed!');
         return;
     }
 

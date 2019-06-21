@@ -5,7 +5,7 @@
   "scripts": {
     "build": "gulp buildConverter --require babel-register --gulpfile tasks",
     "test": "gulp runTests --require babel-register --gulpfile tasks",
-    "convert": "gulp runConvertation --require babel-register --gulpfile tasks",
+    "convert": "gulp runConversion --require babel-register --gulpfile tasks",
     "extension": "gulp buildExtension --require babel-register --gulpfile tasks"
   },
   "babel": {

@@ -20,6 +20,13 @@ Install local dependencies by running:
     yarn install
 ```
 
+Create directories:
+```
+    mkdir build
+    mkdir build/converter
+    touch build/converter/JSConverter.js
+```
+
 Compiles converter and dependencies to one single file in `/build` directory. 
 
 ```

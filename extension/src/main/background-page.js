@@ -24,8 +24,8 @@
     var result = [];
 
     var testRules = function (rules, onComplete) {
-        var convertationResult = jsonFromFilters(rules);
-        //console.log('Converted: content blocker length=' + convertationResult.convertedCount);
+        var conversionResult = jsonFromFilters(rules);
+        //console.log('Converted: content blocker length=' + conversionResult.convertedCount);
 
         //console.log('Setting content blocker..');
 
@@ -51,7 +51,7 @@
             );
         }
 
-        setContentBlocker(convertationResult.converted, function(error) {
+        setContentBlocker(conversionResult.converted, function(error) {
             if (error == null) {
                 //Has been set successfully
                 onComplete(true, rules);
