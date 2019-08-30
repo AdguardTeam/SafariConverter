@@ -13,6 +13,18 @@ QUnit.test("Test single file converter", function (assert) {
     ], 100, true, true);
     assert.ok(result);
 });
+QUnit.test("Test ignore advanced blocking param", function (assert) {
+    const rule = new adguard.rules.CssFilterRule('filmitorrent.xyz#$#.content { margin-top: 0!important; }');
+
+    const result = SafariContentBlockerConverter.convertArray([rule], null, false, false);
+    assert.equal(result.errorsCount, 0);
+
+    assert.ok(result.converted);
+    const converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 0);
+
+    assert.notOk(result.advancedBlocking);
+});
 
 QUnit.module('Script rules');
 QUnit.test("Script rules", function (assert) {
