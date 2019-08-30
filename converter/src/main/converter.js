@@ -1049,14 +1049,14 @@ const SafariContentBlockerConverter = (() =>{
                     }
                 } else if (item.action.type === 'css-display-none') {
                     cssBlocking.push(item);
-                } else if (item.action.type === 'css' && advancedBlocking) {
+                } else if (item.action.type === 'css') {
                     extendedCssBlocking.push(item);
-                } else if (item.action.type === 'script' && advancedBlocking) {
+                } else if (item.action.type === 'script') {
                     scriptRules.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' && agRule.script) {
                     // #@%# rules
                     scriptExceptionRules.push(item);
-                } else if (item.action.type === 'scriptlet' && advancedBlocking) {
+                } else if (item.action.type === 'scriptlet') {
                     scriptlets.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' && agRule.scriptlet) {
                     // #@%#//scriptlet
@@ -1073,8 +1073,7 @@ const SafariContentBlockerConverter = (() =>{
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' &&
-                    AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.JSINJECT) &&
-                    advancedBlocking) {
+                    AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.JSINJECT)) {
                     // jsinject rules
                     contentBlocker.scriptJsInjectExceptions.push(item);
                 } else {
