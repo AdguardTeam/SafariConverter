@@ -92,24 +92,31 @@ QUnit.test('Converts ##^script:has-text to $$script[tag-containts]', (assert) =>
     assert.equal(actual[1], 'example.com##^script:has-text(/[wW]{16000}/)', 'Should be separated to ubo rule');
 });
 
-QUnit.test('Converts rules with $all modifier into 2 rules with: $document and $popup', (assert) => {
+QUnit.test('converts rules with $all modifier into 3 rules with: $document, $popup and $csp', (assert) => {
     // test simple rule;
     let rule = '||example.org^$all';
     let actual = adguard.rules.ruleConverter.convertRule(rule);
     let exp1 = '||example.org^$document';
     let exp2 = '||example.org^$popup';
+    let exp3 = '||example.org^$csp=script-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
+    let exp4 = '||example.org^$csp=font-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:';
 
-    assert.equal(actual.length, 2);
+    assert.equal(actual.length, 4);
     assert.ok(actual.includes(exp1));
     assert.ok(actual.includes(exp2));
+    assert.ok(actual.includes(exp3));
+    assert.ok(actual.includes(exp4));
 
     // test rule with more options
     rule = '||example.org^$all,important';
     actual = adguard.rules.ruleConverter.convertRule(rule);
     exp1 = '||example.org^$document,important';
     exp2 = '||example.org^$popup,important';
-
-    assert.equal(actual.length, 2);
+    exp3 = '||example.org^$csp=script-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:,important';
+    exp4 = '||example.org^$csp=font-src \'self\' \'unsafe-eval\' http: https: data: blob: mediastream: filesystem:,important';
+    assert.equal(actual.length, 4);
     assert.ok(actual.includes(exp1));
     assert.ok(actual.includes(exp2));
+    assert.ok(actual.includes(exp3));
+    assert.ok(actual.includes(exp4));
 });
