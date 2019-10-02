@@ -15,6 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * This source file and tests are copied from https://github.com/AdguardTeam/AdguardBrowserExtension/blob/master/Extension/lib/filter/rule-converter.js
+ * and https://github.com/AdguardTeam/AdguardBrowserExtension/blob/master/Extension/tests/rule-converter/test-rule-converter.js
+ */
+
 (function (adguard, api) {
     const stringUtils = adguard.utils.strings;
     /**
