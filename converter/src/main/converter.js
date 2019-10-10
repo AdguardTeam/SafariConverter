@@ -1200,6 +1200,7 @@ const SafariContentBlockerConverter = (() =>{
             adguard.console.info('Advanced Blocking length: ' + advancedBlocker.length);
 
             result.advancedBlocking = JSON.stringify(advancedBlocker, null, "\t");
+            result.advancedBlockingConvertedCount = advancedBlocker.length;
         }
 
         return result;

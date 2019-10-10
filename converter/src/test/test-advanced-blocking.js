@@ -24,6 +24,7 @@ QUnit.test("Test ignore advanced blocking param", function (assert) {
     assert.equal(converted.length, 0);
 
     assert.notOk(result.advancedBlocking);
+    assert.notOk(result.advancedBlockingConvertedCount);
 });
 
 QUnit.module('Script rules');
@@ -40,6 +41,7 @@ QUnit.test("Script rules", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'][0], "*example-more.com");
@@ -69,6 +71,7 @@ QUnit.test("Script rules exceptions", function (assert) {
 
     advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 1);
+    assert.equal(result.advancedBlockingConvertedCount, 1);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['unless-domain'], "*example.com");
@@ -86,6 +89,7 @@ QUnit.test("Script rules exceptions", function (assert) {
 
     advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.com");
@@ -107,6 +111,7 @@ QUnit.test("Script rules exceptions", function (assert) {
 
     advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.com");
@@ -133,6 +138,7 @@ QUnit.test("Extended Css rules", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*ksl.com");
@@ -160,6 +166,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
 
     advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*ksl.com");
@@ -183,6 +190,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
 
     advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*ksl.com");
@@ -208,6 +216,7 @@ QUnit.test("Cosmetic css rules", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 1);
+    assert.equal(result.advancedBlockingConvertedCount, 1);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*filmitorrent.xyz");
@@ -226,6 +235,7 @@ QUnit.test("Cosmetic css rules invalids", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 0);
+    assert.equal(result.advancedBlockingConvertedCount, 0);
 });
 
 QUnit.module('Scriptlet rules');
@@ -241,6 +251,7 @@ QUnit.test("Scriptlet adguard rule", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 1);
+    assert.equal(result.advancedBlockingConvertedCount, 1);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.org");
@@ -262,6 +273,7 @@ QUnit.test("Scriptlet exception adguard rule", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 0);
+    assert.equal(result.advancedBlockingConvertedCount, 0);
 });
 
 QUnit.test("Composite rule", function (assert) {
@@ -279,6 +291,7 @@ QUnit.test("Composite rule", function (assert) {
 
     const advancedBlocking = JSON.parse(result.advancedBlocking);
     assert.equal(advancedBlocking.length, 2);
+    assert.equal(result.advancedBlockingConvertedCount, 2);
 
     assert.equal(advancedBlocking[0].trigger['url-filter'], ".*");
     assert.equal(advancedBlocking[0].trigger['if-domain'], "*example.org");
