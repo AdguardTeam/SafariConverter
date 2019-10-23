@@ -1012,6 +1012,8 @@ const SafariContentBlockerConverter = (() =>{
         const cssExceptions = [];
         // Extended css Elemhide rules (##)
         let extendedCssBlocking = [];
+        // Cosmetic css exceptions (#@$#)
+        const cosmeticCssExceptions = [];
 
         // Script rules (#%#)
         let scriptRules = [];
@@ -1066,6 +1068,9 @@ const SafariContentBlockerConverter = (() =>{
                     // #@# rules
                     cssExceptions.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' &&
+                    (item.action.css && item.action.css !== '')) {
+                    cosmeticCssExceptions.push(item);
+                } else if (item.action.type === 'ignore-previous-rules' &&
                     AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.GENERICHIDE)) {
                     contentBlocker.cssBlockingGenericHideExceptions.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' &&
@@ -1100,7 +1105,7 @@ const SafariContentBlockerConverter = (() =>{
 
         if (advancedBlocking) {
             // Applying CSS exceptions for extended css rules
-            extendedCssBlocking = applyActionExceptions(extendedCssBlocking, cssExceptions, 'selector');
+            extendedCssBlocking = applyActionExceptions(extendedCssBlocking, cssExceptions.concat(cosmeticCssExceptions), 'selector');
             const extendedCssCompact = compactCssRules(extendedCssBlocking);
             if (!optimize) {
                 contentBlocker.extendedCssBlockingWide = extendedCssCompact.cssBlockingWide;

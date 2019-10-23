@@ -238,6 +238,42 @@ QUnit.test("Cosmetic css rules invalids", function (assert) {
     assert.equal(result.advancedBlockingConvertedCount, 0);
 });
 
+QUnit.test("Cosmetic css exception rules", function (assert) {
+    const cssRule = 'example.com##h1';
+    const cosmeticRule = 'example.com#$#div { max-height: 2px !important; }';
+    const exceptionRule = 'example.com#@$#div { max-height: 2px !important; }';
+
+    let result = SafariContentBlockerConverter.convertArray([cssRule, exceptionRule], null, false, true);
+    assert.equal(result.errorsCount, 0);
+
+    let converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+
+    let advancedBlocking = JSON.parse(result.advancedBlocking);
+    assert.equal(advancedBlocking.length, 0);
+    assert.equal(result.advancedBlockingConvertedCount, 0);
+
+    result = SafariContentBlockerConverter.convertArray([cosmeticRule, exceptionRule], null, false, true);
+    assert.equal(result.errorsCount, 0);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 0);
+
+    advancedBlocking = JSON.parse(result.advancedBlocking);
+    assert.equal(advancedBlocking.length, 0);
+    assert.equal(result.advancedBlockingConvertedCount, 0);
+
+    result = SafariContentBlockerConverter.convertArray([cssRule, cosmeticRule, exceptionRule], null, false, true);
+    assert.equal(result.errorsCount, 0);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+
+    advancedBlocking = JSON.parse(result.advancedBlocking);
+    assert.equal(advancedBlocking.length, 0);
+    assert.equal(result.advancedBlockingConvertedCount, 0);
+});
+
 QUnit.module('Scriptlet rules');
 QUnit.test("Scriptlet adguard rule", function (assert) {
     const ruleText = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
