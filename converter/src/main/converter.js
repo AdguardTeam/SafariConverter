@@ -48,7 +48,7 @@ const SafariContentBlockerConverter = (() =>{
     const URL_FILTER_SCRIPT_RULES = ".*";
     const URL_FILTER_SCRIPTLET_RULES = ".*";
     /**
-     * In some cases URL_FILTER_ANY_URL doesn't work for url exceptions
+     * In some cases URL_FILTER_ANY_URL doesn't work for domain-specific url exceptions
      * https://github.com/AdguardTeam/AdGuardForSafari/issues/285
      */
     const URL_FILTER_URL_RULES_EXCEPTIONS = ".*";
