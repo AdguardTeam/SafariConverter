@@ -1,6 +1,7 @@
 const URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
 const URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
 const URL_FILTER_CSS_RULES = ".*";
+const URL_FILTER_URL_RULES_EXCEPTIONS = ".*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
 const URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
@@ -77,7 +78,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*test-elemhide.com"
             ]
@@ -183,7 +184,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*www.any.gs"
             ]
@@ -194,7 +195,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*test-urlblock.com"
             ]
@@ -213,7 +214,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*hulu.com"
             ]
@@ -224,7 +225,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*hulu.com"
             ]
@@ -235,7 +236,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*hulu.com"
             ]
@@ -246,7 +247,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*wfarm.yandex.net"
             ]
@@ -265,7 +266,7 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_URL_RULES_EXCEPTIONS,
             "if-domain": [
                 "*test-document.com"
             ]

@@ -234,8 +234,41 @@ QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
     assert.equal(converted[1].trigger["url-filter"], URL_FILTER_CSS_RULES);
 
     assert.equal(converted[2].action.type, "ignore-previous-rules");
-    assert.equal(converted[2].trigger["url-filter"], URL_FILTER_ANY_URL);
+    assert.equal(converted[2].trigger["url-filter"], URL_FILTER_URL_RULES_EXCEPTIONS);
     assert.equal(converted[2].trigger["if-domain"], '*example.org');
+});
+
+QUnit.test("Generic domain sensitive rules sorting order - generichide", function (assert) {
+    const result = SafariContentBlockerConverter.convertArray(['###generic', '@@||example.org^$generichide']);
+    assert.equal(result.convertedCount, 2);
+    assert.equal(result.errorsCount, 0);
+    const converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 2);
+
+    assert.equal(converted[0].action.selector, "#generic");
+    assert.equal(converted[0].action.type, "css-display-none");
+    assert.equal(converted[0].trigger["url-filter"], URL_FILTER_CSS_RULES);
+
+    assert.equal(converted[1].action.type, "ignore-previous-rules");
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_URL_RULES_EXCEPTIONS);
+    assert.equal(converted[1].trigger["if-domain"], '*example.org');
+});
+
+QUnit.test("Generic domain sensitive rules sorting order - elemhide", function (assert) {
+    const result = SafariContentBlockerConverter.convertArray(['example.org###generic', '@@||example.org^$elemhide']);
+    assert.equal(result.convertedCount, 2);
+    assert.equal(result.errorsCount, 0);
+    const converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 2);
+
+    assert.equal(converted[0].action.selector, "#generic");
+    assert.equal(converted[0].action.type, "css-display-none");
+    assert.equal(converted[0].trigger["if-domain"], '*example.org');
+    assert.equal(converted[0].trigger["url-filter"], URL_FILTER_CSS_RULES);
+
+    assert.equal(converted[1].action.type, "ignore-previous-rules");
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_URL_RULES_EXCEPTIONS);
+    assert.equal(converted[1].trigger["if-domain"], '*example.org');
 });
 
 QUnit.test("Convert cyrillic rules", function (assert) {
@@ -378,7 +411,7 @@ QUnit.test("Elemhide rules", function (assert) {
     assert.equal(converted[0].action.selector, "#root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row");
     assert.equal(converted[0].action.type, "css-display-none");
 
-    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_ANY_URL);
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_URL_RULES_EXCEPTIONS);
     assert.equal(converted[1].trigger["if-domain"], "*lenta.ru");
     assert.equal(converted[1].action.type, "ignore-previous-rules");
 
@@ -414,7 +447,7 @@ QUnit.test("Important modifier rules sorting order", function(assert) {
     assert.equal(converted[3].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "example-url-block-exception-important\\.org[/:&?]?");
 
     assert.equal(converted[4].action.type, "ignore-previous-rules");
-    assert.equal(converted[4].trigger["url-filter"], URL_FILTER_ANY_URL);
+    assert.equal(converted[4].trigger["url-filter"], URL_FILTER_URL_RULES_EXCEPTIONS);
     assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
 });
 

@@ -47,6 +47,7 @@ const SafariContentBlockerConverter = (() =>{
     const URL_FILTER_CSS_RULES = ".*";
     const URL_FILTER_SCRIPT_RULES = ".*";
     const URL_FILTER_SCRIPTLET_RULES = ".*";
+    const URL_FILTER_URL_RULES_EXCEPTIONS = ".*";
 
     /**
      * Converter implementation.
@@ -471,7 +472,7 @@ const SafariContentBlockerConverter = (() =>{
                     included.push(domain);
                     writeDomainOptions(included, excluded, result.trigger);
 
-                    result.trigger["url-filter"] = URL_FILTER_ANY_URL;
+                    result.trigger["url-filter"] = URL_FILTER_URL_RULES_EXCEPTIONS;
                     delete result.trigger["resource-type"];
                 }
             }
