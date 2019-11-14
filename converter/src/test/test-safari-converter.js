@@ -466,6 +466,37 @@ QUnit.test("BadFilter rules", function (assert) {
 
 });
 
+QUnit.test("TLD wildcard rules", function (assert) {
+
+    let rule = new adguard.rules.CssFilterRule('testcases.adguard.*,surge.*###case-5-wildcard-for-tld > .test-banner');
+
+    let result = SafariContentBlockerConverter.convertArray([rule]);
+    assert.equal(result.errorsCount, 0);
+
+    let converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+    assert.equal(converted[0].trigger['url-filter'], URL_FILTER_CSS_RULES);
+    assert.equal(converted[0].trigger["if-domain"][0], "*surge.com");
+    assert.equal(converted[0].trigger["if-domain"][1], "*surge.org");
+    assert.equal(converted[0].trigger["if-domain"][2], "*surge.edu");
+    assert.equal(converted[0].trigger["if-domain"][20], "*testcases.adguard.com");
+    assert.equal(converted[0].trigger["if-domain"][21], "*testcases.adguard.org");
+
+    rule = new adguard.rules.UrlFilterRule('||*/test-files/adguard.png$domain=testcases.adguard.*|surge.*');
+
+    result = SafariContentBlockerConverter.convertArray([rule]);
+    assert.equal(result.errorsCount, 0);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+    assert.equal(converted[0].trigger['url-filter'], URL_FILTER_REGEXP_START_URL + '.*\\/test-files\\/adguard\\.png');
+    assert.equal(converted[0].trigger["if-domain"][0], "*surge.com");
+    assert.equal(converted[0].trigger["if-domain"][1], "*surge.org");
+    assert.equal(converted[0].trigger["if-domain"][2], "*surge.edu");
+    assert.equal(converted[0].trigger["if-domain"][20], "*testcases.adguard.com");
+    assert.equal(converted[0].trigger["if-domain"][21], "*testcases.adguard.org");
+});
+
 QUnit.test("Test single file converter", function (assert) {
     const result = jsonFromFilters(['test.com', 'domain.com###banner'], 100, true);
     assert.ok(result);

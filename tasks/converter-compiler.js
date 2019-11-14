@@ -14,6 +14,7 @@ const compile = (done) => {
         './utils/common.js',
         './utils/url.js',
         './utils/log.js',
+        './utils/tld-list.js',
         './utils/simple-regex.js',
         './rules/base-filter-rule.js',
         './rules/rule-converter.js',
