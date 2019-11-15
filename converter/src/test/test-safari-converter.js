@@ -478,9 +478,9 @@ QUnit.test("TLD wildcard rules", function (assert) {
     assert.equal(converted[0].trigger['url-filter'], URL_FILTER_CSS_RULES);
     assert.equal(converted[0].trigger["if-domain"][0], "*surge.com");
     assert.equal(converted[0].trigger["if-domain"][1], "*surge.org");
-    assert.equal(converted[0].trigger["if-domain"][2], "*surge.edu");
-    assert.equal(converted[0].trigger["if-domain"][20], "*testcases.adguard.com");
-    assert.equal(converted[0].trigger["if-domain"][21], "*testcases.adguard.org");
+    assert.equal(converted[0].trigger["if-domain"][2], "*surge.ru");
+    assert.equal(converted[0].trigger["if-domain"][99], "*testcases.adguard.com");
+    assert.equal(converted[0].trigger["if-domain"][100], "*testcases.adguard.org");
 
     rule = new adguard.rules.UrlFilterRule('||*/test-files/adguard.png$domain=testcases.adguard.*|surge.*');
 
@@ -492,9 +492,9 @@ QUnit.test("TLD wildcard rules", function (assert) {
     assert.equal(converted[0].trigger['url-filter'], URL_FILTER_REGEXP_START_URL + '.*\\/test-files\\/adguard\\.png');
     assert.equal(converted[0].trigger["if-domain"][0], "*surge.com");
     assert.equal(converted[0].trigger["if-domain"][1], "*surge.org");
-    assert.equal(converted[0].trigger["if-domain"][2], "*surge.edu");
-    assert.equal(converted[0].trigger["if-domain"][20], "*testcases.adguard.com");
-    assert.equal(converted[0].trigger["if-domain"][21], "*testcases.adguard.org");
+    assert.equal(converted[0].trigger["if-domain"][2], "*surge.ru");
+    assert.equal(converted[0].trigger["if-domain"][99], "*testcases.adguard.com");
+    assert.equal(converted[0].trigger["if-domain"][100], "*testcases.adguard.org");
 });
 
 QUnit.test("Test single file converter", function (assert) {
