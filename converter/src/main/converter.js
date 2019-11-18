@@ -146,6 +146,28 @@ const SafariContentBlockerConverter = (() =>{
         };
 
         /**
+         * As a limited solution to support wildcard in tld, as there is no support for wildcards in "if-domain" property in CB
+         * we are going to use a list of popular domains.
+         * https://github.com/AdguardTeam/AdGuardForSafari/issues/248
+         *
+         * @param domains
+         */
+        const resolveTopLevelDomainWildcards = (domains) => {
+            let arr = [...domains];
+            domains.length = 0;
+            arr.forEach(d => {
+                if (d.endsWith('.*')) {
+                    adguard.utils.TOP_LEVEL_DOMAINS_LIST.forEach(tld => {
+                        const domain = d.substring(0, d.length - 2);
+                        domains.push(`${domain}.${tld}`);
+                    });
+                } else {
+                    domains.push(d);
+                }
+            });
+        };
+
+        /**
          * Adds domains specification
          *
          * @param trigger
@@ -155,6 +177,8 @@ const SafariContentBlockerConverter = (() =>{
             const included = [];
             const excluded = [];
             parseDomains(rule, included, excluded);
+            resolveTopLevelDomainWildcards(included);
+            resolveTopLevelDomainWildcards(excluded);
             writeDomainOptions(included, excluded, trigger);
         };
 
@@ -474,6 +498,8 @@ const SafariContentBlockerConverter = (() =>{
                     const excluded = [];
 
                     included.push(domain);
+                    resolveTopLevelDomainWildcards(included);
+                    resolveTopLevelDomainWildcards(excluded);
                     writeDomainOptions(included, excluded, result.trigger);
 
                     result.trigger["url-filter"] = URL_FILTER_URL_RULES_EXCEPTIONS;
