@@ -650,6 +650,7 @@
     UrlFilterRule.THIRD_PARTY_OPTION = "third-party";
     UrlFilterRule.MATCH_CASE_OPTION = "match-case";
     UrlFilterRule.DOCUMENT_OPTION = "document";
+    UrlFilterRule.DOCUMENT_OPTION_REGEX = /\$.*,?document/;
     UrlFilterRule.ELEMHIDE_OPTION = "elemhide";
     UrlFilterRule.GENERICHIDE_OPTION = "generichide";
     UrlFilterRule.URLBLOCK_OPTION = "urlblock";

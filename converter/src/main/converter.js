@@ -262,7 +262,12 @@ const SafariContentBlockerConverter = (() =>{
                 types.push("document");
             }
             if (rule.isBlockPopups()) {
-                // Ignore other in case of $popup modifier
+                const DOCUMENT_OPTION_REGEX = adguard.rules.UrlFilterRule.DOCUMENT_OPTION_REGEX;
+                if (DOCUMENT_OPTION_REGEX.test(rule.ruleText)) {
+                    // $popup rules aren't supported, but $document,popup rule should block url request
+                    // https://github.com/AdguardTeam/FiltersCompiler/issues/74
+                    return;
+                }
                 types = ["popup"];
             }
 
@@ -441,6 +446,11 @@ const SafariContentBlockerConverter = (() =>{
                 (!rule.trigger["load-type"] || rule.trigger["load-type"].indexOf("third-party") === -1)) {
                 // Due to https://github.com/AdguardTeam/AdguardBrowserExtension/issues/145
                 throw new Error("Document blocking rules are allowed only along with third-party or if-domain modifiers");
+            }
+
+            if (rule.trigger["resource-type"] &&
+                rule.trigger["resource-type"].includes("popup")) {
+                throw new Error("$popup rules are not supported");
             }
         };
 

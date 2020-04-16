@@ -45,6 +45,35 @@ QUnit.test("Convert a $network rule", function(assert) {
     assert.equal(1, result.errorsCount);
 });
 
+QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
+    let ruleText = [
+        "||example1.com$document",
+        "||example2.com$document,popup",
+    ];
+    let result = SafariContentBlockerConverter.convertArray(ruleText);
+    let converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 2);
+
+    let convertedRule = converted[0];
+    assert.notOk(convertedRule.trigger["resource-type"]);
+
+    convertedRule = converted[1];
+    assert.notOk(convertedRule.trigger["resource-type"]);
+
+    ruleText = ["||example4.com$popup"];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 0);
+
+    ruleText = ["||example5.com$popup,document"];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+
+    convertedRule = converted[0];
+    assert.notOk(convertedRule.trigger["resource-type"]);
+});
+
 QUnit.test("Convert first-party rule", function (assert) {
     const ruleText = "@@||adriver.ru^$~third-party";
     const result = SafariContentBlockerConverter.convertArray([ruleText]);
