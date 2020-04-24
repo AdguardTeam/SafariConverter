@@ -261,14 +261,11 @@ const SafariContentBlockerConverter = (() =>{
             if (hasContentType(rule, contentTypes.SUBDOCUMENT)) {
                 types.push("document");
             }
+            if (hasContentType(rule, contentTypes.DOCUMENT)) {
+                types.push("document");
+            }
             if (rule.isBlockPopups()) {
-                const DOCUMENT_OPTION_REGEX = adguard.rules.UrlFilterRule.DOCUMENT_OPTION_REGEX;
-                if (DOCUMENT_OPTION_REGEX.test(rule.ruleText)) {
-                    // $popup rules aren't supported, but $document,popup rule should block url request
-                    // https://github.com/AdguardTeam/FiltersCompiler/issues/74
-                    return;
-                }
-                types = ["popup"];
+                types = ["document"];
             }
 
             // Not supported modificators
@@ -437,15 +434,17 @@ const SafariContentBlockerConverter = (() =>{
         /**
          * Validates url blocking rule and discards rules considered dangerous or invalid.
          */
-        const validateUrlBlockingRule = rule => {
+        const validateUrlBlockingRule = (rule, originalRule) => {
 
-            if (rule.action.type === "block" &&
-                rule.trigger["resource-type"] &&
-                rule.trigger["resource-type"].indexOf("document") >= 0 &&
-                !rule.trigger["if-domain"] &&
-                (!rule.trigger["load-type"] || rule.trigger["load-type"].indexOf("third-party") === -1)) {
-                // Due to https://github.com/AdguardTeam/AdguardBrowserExtension/issues/145
-                throw new Error("Document blocking rules are allowed only along with third-party or if-domain modifiers");
+            if (hasContentType(originalRule, adguard.rules.UrlFilterRule.contentTypes.SUBDOCUMENT)) {
+                if (rule.action.type === "block" &&
+                    rule.trigger["resource-type"] &&
+                    rule.trigger["resource-type"].indexOf("document") >= 0 &&
+                    !rule.trigger["if-domain"] &&
+                    (!rule.trigger["load-type"] || rule.trigger["load-type"].indexOf("third-party") === -1)) {
+                    // Due to https://github.com/AdguardTeam/AdguardBrowserExtension/issues/145
+                    throw new Error("Subdocument blocking rules are allowed only along with third-party or if-domain modifiers");
+                }
             }
 
             if (rule.trigger["resource-type"] &&
@@ -587,7 +586,7 @@ const SafariContentBlockerConverter = (() =>{
             checkWhiteListExceptions(rule, result);
 
             // Validate the rule
-            validateUrlBlockingRule(result);
+            validateUrlBlockingRule(result, rule);
 
             return result;
         };
