@@ -49,29 +49,15 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
     let ruleText = [
         "||example1.com$document",
         "||example2.com$document,popup",
+        "||example5.com$popup,document",
     ];
     let result = SafariContentBlockerConverter.convertArray(ruleText);
     let converted = JSON.parse(result.converted);
-    assert.equal(converted.length, 2);
+    assert.equal(converted.length, 3);
 
-    let convertedRule = converted[0];
-    assert.notOk(convertedRule.trigger["resource-type"]);
-
-    convertedRule = converted[1];
-    assert.notOk(convertedRule.trigger["resource-type"]);
-
-    ruleText = ["||example4.com$popup"];
-    result = SafariContentBlockerConverter.convertArray(ruleText);
-    converted = JSON.parse(result.converted);
-    assert.equal(converted.length, 0);
-
-    ruleText = ["||example5.com$popup,document"];
-    result = SafariContentBlockerConverter.convertArray(ruleText);
-    converted = JSON.parse(result.converted);
-    assert.equal(converted.length, 1);
-
-    convertedRule = converted[0];
-    assert.notOk(convertedRule.trigger["resource-type"]);
+    assert.equal(converted[0].trigger["resource-type"], 'document');
+    assert.equal(converted[1].trigger["resource-type"], 'document');
+    assert.equal(converted[2].trigger["resource-type"], 'document');
 });
 
 QUnit.test("Convert first-party rule", function (assert) {
@@ -529,4 +515,71 @@ QUnit.test("TLD wildcard rules", function (assert) {
 QUnit.test("Test single file converter", function (assert) {
     const result = jsonFromFilters(['test.com', 'domain.com###banner'], 100, true);
     assert.ok(result);
+});
+
+QUnit.test("Conversion of different rules", function(assert) {
+    let ruleText = [
+        "||example.com$document",
+        '||getsecuredfiles.com^$popup,third-party',
+        "||test.com$document,popup",
+        '||videoplaza.com^$~object-subrequest,third-party',
+    ];
+    let result = SafariContentBlockerConverter.convertArray(ruleText);
+    let expected =  [{
+        "trigger": {
+            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?example\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }, {
+        "trigger": {
+            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?getsecuredfiles\\.com[/:&?]?",
+            "resource-type": [
+                "document"
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }, {
+        "trigger": {
+            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?test\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }, {
+        "trigger": {
+            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?videoplaza\\.com[/:&?]?",
+            "resource-type": [
+                "image",
+                "style-sheet",
+                "script",
+                "media",
+                "raw",
+                "font",
+                "document"
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    let converted = JSON.parse(result.converted);
+    converted.forEach((convertedRule, i) => {
+        assert.deepEqual(convertedRule, expected[i]);
+    });
 });

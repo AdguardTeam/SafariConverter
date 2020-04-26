@@ -258,10 +258,8 @@ const SafariContentBlockerConverter = (() =>{
             if (hasContentType(rule, contentTypes.FONT)) {
                 types.push("font");
             }
-            if (hasContentType(rule, contentTypes.SUBDOCUMENT)) {
-                types.push("document");
-            }
-            if (hasContentType(rule, contentTypes.DOCUMENT)) {
+            if (hasContentType(rule, contentTypes.DOCUMENT)
+                || hasContentType(rule, contentTypes.SUBDOCUMENT)) {
                 types.push("document");
             }
             if (rule.isBlockPopups()) {

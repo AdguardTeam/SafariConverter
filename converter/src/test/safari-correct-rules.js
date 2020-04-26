@@ -136,6 +136,20 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
+            "url-filter": URL_FILTER_REGEXP_START_URL + "getsecuredfiles\\.com[/:&?]?",
+            "resource-type": [
+                "document"
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    },
+    {
+        "trigger": {
             "url-filter": "\\/addyn\\|.*\\|adtech;"
         },
         "action": {
@@ -272,7 +286,7 @@ const safariCorrectRules = [
 ];
 
 function _checkResult(json, errors) {
-    const expectedErrorsCount = 4;
+    const expectedErrorsCount = 3;
     const expectedCssTrunkatedCount = 4;
 
     if (json === null) {
