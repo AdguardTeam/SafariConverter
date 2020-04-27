@@ -46,6 +46,7 @@ QUnit.test("Convert a $network rule", function(assert) {
 });
 
 QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
+    const URL_START = '^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?';
     let ruleText = [
         "||example1.com$document",
         "||example2.com$document,popup",
@@ -56,8 +57,62 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
     assert.equal(converted.length, 3);
 
     assert.equal(converted[0].trigger["resource-type"], 'document');
+    assert.equal(converted[0].action["type"], 'block');
+    assert.equal(Object.keys(converted[0]).length, 2);
+    assert.equal(converted[0].trigger["url-filter"], URL_START + "example1\\.com");
     assert.equal(converted[1].trigger["resource-type"], 'document');
+    assert.equal(converted[1].action["type"], 'block');
+    assert.equal(Object.keys(converted[1]).length, 2);
+    assert.equal(converted[1].trigger["url-filter"], URL_START + "example2\\.com");
     assert.equal(converted[2].trigger["resource-type"], 'document');
+    assert.equal(converted[2].action["type"], 'block');
+    assert.equal(Object.keys(converted[2]).length, 2);
+    assert.equal(converted[2].trigger["url-filter"], URL_START + "example5\\.com");
+
+    ruleText = [
+        "||example.com$document",
+        '||getsecuredfiles.com^$popup,third-party',
+        "||test.com$document,popup"
+    ];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    let expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "example\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }, {
+        "trigger": {
+            "url-filter": URL_START + "getsecuredfiles\\.com[/:&?]?",
+            "resource-type": [
+                "document"
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }, {
+        "trigger": {
+            "url-filter": URL_START + "test\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    converted.forEach((convertedRule, i) => {
+        assert.deepEqual(convertedRule, expected[i]);
+    });
 });
 
 QUnit.test("Convert first-party rule", function (assert) {
@@ -515,71 +570,4 @@ QUnit.test("TLD wildcard rules", function (assert) {
 QUnit.test("Test single file converter", function (assert) {
     const result = jsonFromFilters(['test.com', 'domain.com###banner'], 100, true);
     assert.ok(result);
-});
-
-QUnit.test("Conversion of different rules", function(assert) {
-    let ruleText = [
-        "||example.com$document",
-        '||getsecuredfiles.com^$popup,third-party',
-        "||test.com$document,popup",
-        '||videoplaza.com^$~object-subrequest,third-party',
-    ];
-    let result = SafariContentBlockerConverter.convertArray(ruleText);
-    let expected =  [{
-        "trigger": {
-            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?example\\.com",
-            "resource-type": [
-                "document"
-            ]
-        },
-        "action": {
-            "type": "block"
-        }
-    }, {
-        "trigger": {
-            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?getsecuredfiles\\.com[/:&?]?",
-            "resource-type": [
-                "document"
-            ],
-            "load-type": [
-                "third-party"
-            ]
-        },
-        "action": {
-            "type": "block"
-        }
-    }, {
-        "trigger": {
-            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?test\\.com",
-            "resource-type": [
-                "document"
-            ]
-        },
-        "action": {
-            "type": "block"
-        }
-    }, {
-        "trigger": {
-            "url-filter": "^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?videoplaza\\.com[/:&?]?",
-            "resource-type": [
-                "image",
-                "style-sheet",
-                "script",
-                "media",
-                "raw",
-                "font",
-                "document"
-            ],
-            "load-type": [
-                "third-party"
-            ]
-        },
-        "action": {
-            "type": "block"
-        }
-    }];
-    let converted = JSON.parse(result.converted);
-    converted.forEach((convertedRule, i) => {
-        assert.deepEqual(convertedRule, expected[i]);
-    });
 });
