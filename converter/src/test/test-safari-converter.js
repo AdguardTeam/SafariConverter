@@ -69,11 +69,8 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
     assert.equal(Object.keys(converted[2]).length, 2);
     assert.equal(converted[2].trigger["url-filter"], URL_START + "example5\\.com");
 
-    ruleText = [
-        "||example.com$document",
-        '||getsecuredfiles.com^$popup,third-party',
-        "||test.com$document,popup"
-    ];
+    // conversion of $document rule
+    ruleText = ["||example.com$document"];
     result = SafariContentBlockerConverter.convertArray(ruleText);
     let expected =  [{
         "trigger": {
@@ -85,7 +82,48 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
         "action": {
             "type": "block"
         }
-    }, {
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+
+    // conversion of $document and $popup rule
+    ruleText = ["||test.com$document,popup"];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "test\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+
+    // conversion of $popup rule
+    ruleText = ['||example.com^$popup'];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "example\\.com[/:&?]?",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+
+    // conversion of $popup and third-party rule
+    ruleText = ['||getsecuredfiles.com^$popup,third-party'];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    expected =  [{
         "trigger": {
             "url-filter": URL_START + "getsecuredfiles\\.com[/:&?]?",
             "resource-type": [
@@ -98,21 +136,9 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
         "action": {
             "type": "block"
         }
-    }, {
-        "trigger": {
-            "url-filter": URL_START + "test\\.com",
-            "resource-type": [
-                "document"
-            ]
-        },
-        "action": {
-            "type": "block"
-        }
     }];
     converted = JSON.parse(result.converted);
-    converted.forEach((convertedRule, i) => {
-        assert.deepEqual(convertedRule, expected[i]);
-    });
+    assert.deepEqual(converted, expected);
 });
 
 QUnit.test("Convert first-party rule", function (assert) {
