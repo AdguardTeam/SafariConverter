@@ -122,6 +122,7 @@
         'to',
         'mobi',
         'gov.cn',
+        'sh'
     ];
 
     api.TOP_LEVEL_DOMAINS_LIST = TOP_LEVEL_DOMAINS_LIST;
