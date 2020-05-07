@@ -479,8 +479,10 @@ QUnit.test("TLD wildcard rules", function (assert) {
     assert.equal(converted[0].trigger["if-domain"][0], "*surge.com");
     assert.equal(converted[0].trigger["if-domain"][1], "*surge.org");
     assert.equal(converted[0].trigger["if-domain"][2], "*surge.ru");
-    assert.equal(converted[0].trigger["if-domain"][99], "*testcases.adguard.com");
-    assert.equal(converted[0].trigger["if-domain"][100], "*testcases.adguard.org");
+    assert.equal(converted[0].trigger["if-domain"][99], "*surge.sh");
+    assert.equal(converted[0].trigger["if-domain"][100], "*testcases.adguard.com");
+    assert.equal(converted[0].trigger["if-domain"][101], "*testcases.adguard.org");
+    assert.equal(converted[0].trigger["if-domain"][199], "*testcases.adguard.sh");
 
     rule = new adguard.rules.UrlFilterRule('||*/test-files/adguard.png$domain=testcases.adguard.*|surge.*');
 
@@ -493,8 +495,25 @@ QUnit.test("TLD wildcard rules", function (assert) {
     assert.equal(converted[0].trigger["if-domain"][0], "*surge.com");
     assert.equal(converted[0].trigger["if-domain"][1], "*surge.org");
     assert.equal(converted[0].trigger["if-domain"][2], "*surge.ru");
-    assert.equal(converted[0].trigger["if-domain"][99], "*testcases.adguard.com");
-    assert.equal(converted[0].trigger["if-domain"][100], "*testcases.adguard.org");
+    assert.equal(converted[0].trigger["if-domain"][99], "*surge.sh");
+    assert.equal(converted[0].trigger["if-domain"][100], "*testcases.adguard.com");
+    assert.equal(converted[0].trigger["if-domain"][101], "*testcases.adguard.org");
+    assert.equal(converted[0].trigger["if-domain"][199], "*testcases.adguard.sh");
+
+    rule = new adguard.rules.UrlFilterRule('|http$script,domain=forbes.*');
+
+    result = SafariContentBlockerConverter.convertArray([rule]);
+    assert.equal(result.errorsCount, 0);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+    assert.equal(converted[0].trigger["url-filter"], "^http");
+    assert.equal(converted[0].trigger["resource-type"][0], "script");
+    assert.equal(converted[0].trigger["if-domain"][0], "*forbes.com");
+    assert.equal(converted[0].trigger["if-domain"][1], "*forbes.org");
+    assert.equal(converted[0].trigger["if-domain"][2], "*forbes.ru");
+    assert.equal(converted[0].trigger["if-domain"][99], "*forbes.sh");
+    assert.equal(converted[0].action.type, "block");
 });
 
 QUnit.test("Test single file converter", function (assert) {
