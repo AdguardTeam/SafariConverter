@@ -136,9 +136,9 @@ const safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_REGEXP_START_URL + "getsecuredfiles\\.com" + URL_FILTER_REGEXP_SEPARATOR,
+            "url-filter": URL_FILTER_REGEXP_START_URL + "getsecuredfiles\\.com[/:&?]?",
             "resource-type": [
-                "popup"
+                "document"
             ],
             "load-type": [
                 "third-party"

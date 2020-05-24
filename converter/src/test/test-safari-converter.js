@@ -45,6 +45,102 @@ QUnit.test("Convert a $network rule", function(assert) {
     assert.equal(1, result.errorsCount);
 });
 
+QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
+    const URL_START = '^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?';
+    let ruleText = [
+        "||example1.com$document",
+        "||example2.com$document,popup",
+        "||example5.com$popup,document",
+    ];
+    let result = SafariContentBlockerConverter.convertArray(ruleText);
+    let converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 3);
+
+    assert.equal(converted[0].trigger["resource-type"], 'document');
+    assert.equal(converted[0].action["type"], 'block');
+    assert.equal(Object.keys(converted[0]).length, 2);
+    assert.equal(converted[0].trigger["url-filter"], URL_START + "example1\\.com");
+    assert.equal(converted[1].trigger["resource-type"], 'document');
+    assert.equal(converted[1].action["type"], 'block');
+    assert.equal(Object.keys(converted[1]).length, 2);
+    assert.equal(converted[1].trigger["url-filter"], URL_START + "example2\\.com");
+    assert.equal(converted[2].trigger["resource-type"], 'document');
+    assert.equal(converted[2].action["type"], 'block');
+    assert.equal(Object.keys(converted[2]).length, 2);
+    assert.equal(converted[2].trigger["url-filter"], URL_START + "example5\\.com");
+
+    // conversion of $document rule
+    ruleText = ["||example.com$document"];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    let expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "example\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+
+    // conversion of $document and $popup rule
+    ruleText = ["||test.com$document,popup"];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "test\\.com",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+
+    // conversion of $popup rule
+    ruleText = ['||example.com^$popup'];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "example\\.com[/:&?]?",
+            "resource-type": [
+                "document"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+
+    // conversion of $popup and third-party rule
+    ruleText = ['||getsecuredfiles.com^$popup,third-party'];
+    result = SafariContentBlockerConverter.convertArray(ruleText);
+    expected =  [{
+        "trigger": {
+            "url-filter": URL_START + "getsecuredfiles\\.com[/:&?]?",
+            "resource-type": [
+                "document"
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
+    }];
+    converted = JSON.parse(result.converted);
+    assert.deepEqual(converted, expected);
+});
+
 QUnit.test("Convert first-party rule", function (assert) {
     const ruleText = "@@||adriver.ru^$~third-party";
     const result = SafariContentBlockerConverter.convertArray([ruleText]);
