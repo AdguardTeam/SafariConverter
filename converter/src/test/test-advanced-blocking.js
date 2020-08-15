@@ -13,10 +13,10 @@ QUnit.test("Test single file converter", function (assert) {
     ], 100, true, true);
     assert.ok(result);
 });
-QUnit.test("Test ignore advanced blocking param", function (assert) {
+QUnit.test("Test ignore advanced blocking param", async function (assert) {
     const rule = new adguard.rules.CssFilterRule('filmitorrent.xyz#$#.content { margin-top: 0!important; }');
 
-    const result = SafariContentBlockerConverter.convertArray([rule], null, false, false);
+    const result = await SafariContentBlockerConverter.convertArray([rule], null, false, false);
     assert.equal(result.errorsCount, 0);
 
     assert.ok(result.converted);
@@ -28,12 +28,12 @@ QUnit.test("Test ignore advanced blocking param", function (assert) {
 });
 
 QUnit.module('Script rules');
-QUnit.test("Script rules", function (assert) {
+QUnit.test("Script rules", async function (assert) {
 
     const rule = new adguard.rules.ScriptFilterRule('example.org,example-more.com#%#alert(1);', 0);
     const ruleTwo = new adguard.rules.ScriptFilterRule("~test.com#%#alert(2);");
 
-    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([rule, ruleTwo], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -57,14 +57,14 @@ QUnit.test("Script rules", function (assert) {
     assert.equal(advancedBlocking[1].action.script, "alert(2);");
 });
 
-QUnit.test("Script rules exceptions", function (assert) {
+QUnit.test("Script rules exceptions", async function (assert) {
 
     let rule, exceptionRule, result, converted, advancedBlocking;
 
     rule = new adguard.rules.ScriptFilterRule("#%#window.__gaq = undefined;");
     exceptionRule = new adguard.rules.ScriptFilterRule("example.com#@%#window.__gaq = undefined;");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 0);
@@ -82,7 +82,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     rule = new adguard.rules.ScriptFilterRule('example.com#%#alert(1);', 0);
     exceptionRule = new adguard.rules.UrlFilterRule("@@||example.com^$jsinject");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 0);
@@ -104,7 +104,7 @@ QUnit.test("Script rules exceptions", function (assert) {
     rule = new adguard.rules.ScriptFilterRule("example.com#%#alert(2);");
     exceptionRule = new adguard.rules.UrlFilterRule("@@||example.com^$document");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
@@ -125,12 +125,12 @@ QUnit.test("Script rules exceptions", function (assert) {
 });
 
 QUnit.module('Extended Css rules');
-QUnit.test("Extended Css rules", function (assert) {
+QUnit.test("Extended Css rules", async function (assert) {
 
     const rule = new adguard.rules.CssFilterRule('ksl.com#?#.queue:-abp-has(.sponsored)', 0);
     const ruleTwo = new adguard.rules.CssFilterRule('yelp.com#?#li[class^="domtags--li"]:-abp-has(a[href^="/adredir?"])');
 
-    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([rule, ruleTwo], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -151,7 +151,7 @@ QUnit.test("Extended Css rules", function (assert) {
     assert.equal(advancedBlocking[1].action.css, "li[class^=\"domtags--li\"]:-abp-has(a[href^=\"/adredir?\"])");
 });
 
-QUnit.test("Extended Css rules exceptions", function (assert) {
+QUnit.test("Extended Css rules exceptions", async function (assert) {
 
     let rule, exceptionRule, result, converted, advancedBlocking;
 
@@ -159,7 +159,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     rule = new adguard.rules.CssFilterRule("ksl.com#?#.queue:-abp-has(.sponsored)");
     exceptionRule = new adguard.rules.UrlFilterRule("@@||ksl.com^$elemhide");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
@@ -183,7 +183,7 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
     rule = new adguard.rules.CssFilterRule("ksl.com#?#.queue:-abp-has(.sponsored)");
     exceptionRule = new adguard.rules.UrlFilterRule("@@||ksl.com^$document");
 
-    result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
     converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
@@ -205,10 +205,10 @@ QUnit.test("Extended Css rules exceptions", function (assert) {
 });
 
 QUnit.module('Cosmetic css rules');
-QUnit.test("Cosmetic css rules", function (assert) {
+QUnit.test("Cosmetic css rules", async function (assert) {
     const rule = new adguard.rules.CssFilterRule('filmitorrent.xyz#$#.content { margin-top: 0!important; }');
 
-    const result = SafariContentBlockerConverter.convertArray([rule], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([rule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -224,10 +224,10 @@ QUnit.test("Cosmetic css rules", function (assert) {
     assert.equal(advancedBlocking[0].action.css, ".content { margin-top: 0!important; }");
 });
 
-QUnit.test("Cosmetic css rules invalids", function (assert) {
+QUnit.test("Cosmetic css rules invalids", async function (assert) {
     const rule = new adguard.rules.CssFilterRule('filmitorrent.xyz#$#.content { url("http://example.com/style.css") }');
 
-    const result = SafariContentBlockerConverter.convertArray([rule], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([rule], null, false, true);
     assert.equal(result.errorsCount, 1);
 
     const converted = JSON.parse(result.converted);
@@ -238,12 +238,12 @@ QUnit.test("Cosmetic css rules invalids", function (assert) {
     assert.equal(result.advancedBlockingConvertedCount, 0);
 });
 
-QUnit.test("Cosmetic css exception rules", function (assert) {
+QUnit.test("Cosmetic css exception rules", async function (assert) {
     const cssRule = 'example.com##h1';
     const cosmeticRule = 'example.com#$#div { max-height: 2px !important; }';
     const exceptionRule = 'example.com#@$#div { max-height: 2px !important; }';
 
-    let result = SafariContentBlockerConverter.convertArray([cssRule, exceptionRule], null, false, true);
+    let result = await SafariContentBlockerConverter.convertArray([cssRule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     let converted = JSON.parse(result.converted);
@@ -253,7 +253,7 @@ QUnit.test("Cosmetic css exception rules", function (assert) {
     assert.equal(advancedBlocking.length, 0);
     assert.equal(result.advancedBlockingConvertedCount, 0);
 
-    result = SafariContentBlockerConverter.convertArray([cosmeticRule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([cosmeticRule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     converted = JSON.parse(result.converted);
@@ -263,7 +263,7 @@ QUnit.test("Cosmetic css exception rules", function (assert) {
     assert.equal(advancedBlocking.length, 0);
     assert.equal(result.advancedBlockingConvertedCount, 0);
 
-    result = SafariContentBlockerConverter.convertArray([cssRule, cosmeticRule, exceptionRule], null, false, true);
+    result = await SafariContentBlockerConverter.convertArray([cssRule, cosmeticRule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     converted = JSON.parse(result.converted);
@@ -275,11 +275,11 @@ QUnit.test("Cosmetic css exception rules", function (assert) {
 });
 
 QUnit.module('Scriptlet rules');
-QUnit.test("Scriptlet adguard rule", function (assert) {
+QUnit.test("Scriptlet adguard rule", async function (assert) {
     const ruleText = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
     const rule = new adguard.rules.ScriptletRule(ruleText);
 
-    const result = SafariContentBlockerConverter.convertArray([rule], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([rule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -296,12 +296,12 @@ QUnit.test("Scriptlet adguard rule", function (assert) {
     assert.equal(advancedBlocking[0].action.scriptletParam, "{\"name\":\"abort-on-property-read\",\"args\":[\"I10C\"]}");
 });
 
-QUnit.test("Scriptlet exception adguard rule", function (assert) {
+QUnit.test("Scriptlet exception adguard rule", async function (assert) {
     const ruleText = "example.org#%#//scriptlet('abort-on-property-read', 'I10C')";
     const rule = new adguard.rules.ScriptletRule(ruleText);
     const exceptionRule = new adguard.rules.ScriptletRule("example.org#@%#//scriptlet('abort-on-property-read', 'I10C')");
 
-    const result = SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([rule, exceptionRule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -312,14 +312,14 @@ QUnit.test("Scriptlet exception adguard rule", function (assert) {
     assert.equal(result.advancedBlockingConvertedCount, 0);
 });
 
-QUnit.test("Composite rule", function (assert) {
+QUnit.test("Composite rule", async function (assert) {
     const ruleText = `example.org#$#hide-if-has-and-matches-style 'd[id^="_"]' 'div > s' 'display: none'; hide-if-contains /.*/ .p 'a[href^="/ad__c?"]'`;
     const compositeRule = adguard.rules.builder.createRule(ruleText);
 
     assert.ok(compositeRule);
     assert.ok(compositeRule instanceof adguard.rules.CompositeRule);
 
-    const result = SafariContentBlockerConverter.convertArray([compositeRule], null, false, true);
+    const result = await SafariContentBlockerConverter.convertArray([compositeRule], null, false, true);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
