@@ -4,8 +4,8 @@
 
 /* global SafariContentBlockerConverter, QUnit, URL_FILTER_REGEXP_START_URL, _checkResult, jsonFromFilters */
 
-QUnit.test("Convert rules to JSON", function (assert) {
-    const safariJSON = SafariContentBlockerConverter.convertArray(rules);
+QUnit.test("Convert rules to JSON", async function (assert) {
+    const safariJSON = await SafariContentBlockerConverter.convertArray(rules);
     const errors = [];
     _checkResult(safariJSON, errors);
 
@@ -28,31 +28,31 @@ QUnit.test("Convert rules to JSON", function (assert) {
     }
 });
 
-QUnit.test("Convert a comment", function(assert) {
+QUnit.test("Convert a comment", async function(assert) {
     const ruleText = "! this is a comment";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
 
     // Comments are simply ignored, that's why just a zero
     assert.equal(0, result.errorsCount);
 });
 
-QUnit.test("Convert a $network rule", function(assert) {
+QUnit.test("Convert a $network rule", async function(assert) {
     const ruleText = "127.0.0.1$network";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
 
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 });
 
-QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
+QUnit.test("Conversion of $popup and #document,popup rules", async function(assert) {
     const URL_START = '^[htpsw]+:\\/\\/([a-z0-9-]+\\.)?';
     let ruleText = [
         "||example1.com$document",
         "||example2.com$document,popup",
         "||example5.com$popup,document",
     ];
-    let result = SafariContentBlockerConverter.convertArray(ruleText);
+    let result = await SafariContentBlockerConverter.convertArray(ruleText);
     let converted = JSON.parse(result.converted);
     assert.equal(converted.length, 3);
 
@@ -71,7 +71,7 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
 
     // conversion of $document rule
     ruleText = ["||example.com$document"];
-    result = SafariContentBlockerConverter.convertArray(ruleText);
+    result = await SafariContentBlockerConverter.convertArray(ruleText);
     let expected =  [{
         "trigger": {
             "url-filter": URL_START + "example\\.com",
@@ -88,7 +88,7 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
 
     // conversion of $document and $popup rule
     ruleText = ["||test.com$document,popup"];
-    result = SafariContentBlockerConverter.convertArray(ruleText);
+    result = await SafariContentBlockerConverter.convertArray(ruleText);
     expected =  [{
         "trigger": {
             "url-filter": URL_START + "test\\.com",
@@ -105,7 +105,7 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
 
     // conversion of $popup rule
     ruleText = ['||example.com^$popup'];
-    result = SafariContentBlockerConverter.convertArray(ruleText);
+    result = await SafariContentBlockerConverter.convertArray(ruleText);
     expected =  [{
         "trigger": {
             "url-filter": URL_START + "example\\.com[/:&?]?",
@@ -122,7 +122,7 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
 
     // conversion of $popup and third-party rule
     ruleText = ['||getsecuredfiles.com^$popup,third-party'];
-    result = SafariContentBlockerConverter.convertArray(ruleText);
+    result = await SafariContentBlockerConverter.convertArray(ruleText);
     expected =  [{
         "trigger": {
             "url-filter": URL_START + "getsecuredfiles\\.com[/:&?]?",
@@ -141,9 +141,9 @@ QUnit.test("Conversion of $popup and #document,popup rules", function(assert) {
     assert.deepEqual(converted, expected);
 });
 
-QUnit.test("Convert first-party rule", function (assert) {
+QUnit.test("Convert first-party rule", async function (assert) {
     const ruleText = "@@||adriver.ru^$~third-party";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -159,8 +159,8 @@ QUnit.test("Convert first-party rule", function (assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Convert websocket rules", function (assert) {
-    var result = SafariContentBlockerConverter.convertArray(["||test.com^$websocket"]);
+QUnit.test("Convert websocket rules", async function (assert) {
+    var result = await SafariContentBlockerConverter.convertArray(["||test.com^$websocket"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -176,7 +176,7 @@ QUnit.test("Convert websocket rules", function (assert) {
     assert.equal("raw", convertedRule.trigger["resource-type"][0]);
 
 
-    result = SafariContentBlockerConverter.convertArray(["$websocket,domain=123movies.is"]);
+    result = await SafariContentBlockerConverter.convertArray(["$websocket,domain=123movies.is"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -189,7 +189,7 @@ QUnit.test("Convert websocket rules", function (assert) {
     assert.ok(convertedRule.trigger["resource-type"]);
     assert.equal(convertedRule.trigger["resource-type"][0], "raw");
 
-    result = SafariContentBlockerConverter.convertArray([".rocks^$third-party,websocket"]);
+    result = await SafariContentBlockerConverter.convertArray([".rocks^$third-party,websocket"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -205,9 +205,9 @@ QUnit.test("Convert websocket rules", function (assert) {
     assert.equal(convertedRule.trigger["resource-type"][0], "raw");
 });
 
-QUnit.test("Convert ~script rule", function (assert) {
+QUnit.test("Convert ~script rule", async function (assert) {
     const ruleText = "||test.com^$~script,third-party";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -224,16 +224,16 @@ QUnit.test("Convert ~script rule", function (assert) {
     assert.equal("third-party", convertedRule.trigger["load-type"][0]);
 });
 
-QUnit.test("Convert subdocument first-party rule", function (assert) {
+QUnit.test("Convert subdocument first-party rule", async function (assert) {
     const ruleText = "||youporn.com^$subdocument,~third-party";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 });
 
-QUnit.test("Convert subdocument third-party rule", function (assert) {
+QUnit.test("Convert subdocument third-party rule", async function (assert) {
     const ruleText = "||youporn.com^$subdocument,third-party";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -251,9 +251,9 @@ QUnit.test("Convert subdocument third-party rule", function (assert) {
     assert.equal("block", convertedRule.action.type);
 });
 
-QUnit.test("Convert rule with empty regexp", function (assert) {
+QUnit.test("Convert rule with empty regexp", async function (assert) {
     const ruleText = "@@$image,domain=moonwalk.cc";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     const converted = JSON.parse(result.converted);
@@ -268,9 +268,9 @@ QUnit.test("Convert rule with empty regexp", function (assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Inverted whitelist", function (assert) {
+QUnit.test("Inverted whitelist", async function (assert) {
     const ruleText = "@@||*$domain=~whitelisted.domain.com|~whitelisted.domain2.com";
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     const converted = JSON.parse(result.converted);
@@ -284,10 +284,10 @@ QUnit.test("Inverted whitelist", function (assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Generichide rules", function (assert) {
+QUnit.test("Generichide rules", async function (assert) {
     const ruleText = '@@||hulu.com/page$generichide';
 
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     const converted = JSON.parse(result.converted);
@@ -298,10 +298,10 @@ QUnit.test("Generichide rules", function (assert) {
     assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_REGEXP_START_URL + 'hulu\\.com\\/page');
 });
 
-QUnit.test("Generic domain sensitive rules", function (assert) {
+QUnit.test("Generic domain sensitive rules", async function (assert) {
     const ruleText = '~google.com##banner';
 
-    const result = SafariContentBlockerConverter.convertArray([ruleText]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     const converted = JSON.parse(result.converted);
@@ -313,8 +313,8 @@ QUnit.test("Generic domain sensitive rules", function (assert) {
     assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_CSS_RULES);
 });
 
-QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
-    const result = SafariContentBlockerConverter.convertArray(['~example.org##generic', '##wide1', '##specific', '@@||example.org^$generichide']);
+QUnit.test("Generic domain sensitive rules sorting order", async function (assert) {
+    const result = await SafariContentBlockerConverter.convertArray(['~example.org##generic', '##wide1', '##specific', '@@||example.org^$generichide']);
     assert.equal(result.convertedCount, 3);
     assert.equal(result.errorsCount, 0);
     const converted = JSON.parse(result.converted);
@@ -334,8 +334,8 @@ QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
     assert.equal(converted[2].trigger["if-domain"], '*example.org');
 });
 
-QUnit.test("Generic domain sensitive rules sorting order - generichide", function (assert) {
-    const result = SafariContentBlockerConverter.convertArray(['###generic', '@@||example.org^$generichide']);
+QUnit.test("Generic domain sensitive rules sorting order - generichide", async function (assert) {
+    const result = await SafariContentBlockerConverter.convertArray(['###generic', '@@||example.org^$generichide']);
     assert.equal(result.convertedCount, 2);
     assert.equal(result.errorsCount, 0);
     const converted = JSON.parse(result.converted);
@@ -350,8 +350,8 @@ QUnit.test("Generic domain sensitive rules sorting order - generichide", functio
     assert.equal(converted[1].trigger["if-domain"], '*example.org');
 });
 
-QUnit.test("Generic domain sensitive rules sorting order - elemhide", function (assert) {
-    const result = SafariContentBlockerConverter.convertArray(['example.org###generic', '@@||example.org^$elemhide']);
+QUnit.test("Generic domain sensitive rules sorting order - elemhide", async function (assert) {
+    const result = await SafariContentBlockerConverter.convertArray(['example.org###generic', '@@||example.org^$elemhide']);
     assert.equal(result.convertedCount, 2);
     assert.equal(result.errorsCount, 0);
     const converted = JSON.parse(result.converted);
@@ -367,11 +367,11 @@ QUnit.test("Generic domain sensitive rules sorting order - elemhide", function (
     assert.equal(converted[1].trigger["if-domain"], '*example.org');
 });
 
-QUnit.test("Convert cyrillic rules", function (assert) {
+QUnit.test("Convert cyrillic rules", async function (assert) {
     const ruleText = 'меил.рф';
     const ruleTextMarkedDomain = '||меил.рф';
 
-    const result = SafariContentBlockerConverter.convertArray([ruleText, ruleTextMarkedDomain]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleText, ruleTextMarkedDomain]);
     assert.equal(2, result.convertedCount);
     assert.equal(0, result.errorsCount);
     const converted = JSON.parse(result.converted);
@@ -381,31 +381,31 @@ QUnit.test("Convert cyrillic rules", function (assert) {
     assert.equal(converted[1].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "xn--e1agjb\\.xn--p1ai");
 });
 
-QUnit.test("Convert regexp rules", function (assert) {
+QUnit.test("Convert regexp rules", async function (assert) {
     var ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
-    var result = SafariContentBlockerConverter.convertArray([ruleText]);
+    var result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 
     ruleText = "^https?://(?!static)([^.]+)+?fastpicru[:/]$script,domain=fastpic.ru";
-    result = SafariContentBlockerConverter.convertArray([ruleText]);
+    result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
     ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]{30,50}[.][a-z]{2,5}[/:&?]?/";
-    result = SafariContentBlockerConverter.convertArray([ruleText]);
+    result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 
     ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]+[.][a-z]+\\b/";
-    result = SafariContentBlockerConverter.convertArray([ruleText]);
+    result = await SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 });
 
-QUnit.test("CSS pseudo classes", function (assert) {
+QUnit.test("CSS pseudo classes", async function (assert) {
     // Valid selectors
-    var result = SafariContentBlockerConverter.convertArray([
+    var result = await SafariContentBlockerConverter.convertArray([
         'w3schools.com###main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)',
         'w3schools.com###:root div.ads',
         "w3schools.com###body div[attr='test']:first-child  div",
@@ -454,26 +454,26 @@ QUnit.test("Regular expressions performance", function (assert) {
     _testCompare(regExp1, regExp4, count);
 });
 
-QUnit.test("Content Blocker RegExp Problem", function (assert) {
+QUnit.test("Content Blocker RegExp Problem", async function (assert) {
 
     const rule = new adguard.rules.UrlFilterRule('@@||4players.de^$genericblock', 0);
 
-    var result = SafariContentBlockerConverter.convertArray([rule]);
+    var result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 
     // Initialize regexp (while processing request from content script for example)
     assert.ok(!!rule.getUrlRegExp());
 
     // Convert again
-    result = SafariContentBlockerConverter.convertArray([rule]);
+    result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 });
 
-QUnit.test("UpperCase domains", function (assert) {
+QUnit.test("UpperCase domains", async function (assert) {
 
     const rule = new adguard.rules.UrlFilterRule('@@||UpperCase.test^$genericblock', 0);
 
-    const result = SafariContentBlockerConverter.convertArray([rule]);
+    const result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -482,23 +482,23 @@ QUnit.test("UpperCase domains", function (assert) {
     assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
 });
 
-QUnit.test("CSP rules", function (assert) {
+QUnit.test("CSP rules", async function (assert) {
 
     const rule = new adguard.rules.UrlFilterRule('|blob:$script,domain=pornhub.com|xhamster.com|youporn.com', 0);
 
-    const result = SafariContentBlockerConverter.convertArray([rule]);
+    const result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
     assert.equal(result.convertedCount, 1);
 });
 
-QUnit.test("Elemhide rules", function (assert) {
+QUnit.test("Elemhide rules", async function (assert) {
 
     const ruleCss = new adguard.rules.CssFilterRule('lenta.ru###root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row', 0);
     const ruleBlockingUrl = new adguard.rules.UrlFilterRule('https://icdn.lenta.ru/images/2017/04/10/16/20170410160659586/top7_f07b6db166774abba29e0de2e335f50a.jpg', 0);
     const ruleElemhide = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide', 0);
     const ruleElemhideGenericBlock = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide,genericblock', 0);
 
-    const result = SafariContentBlockerConverter.convertArray([ruleCss, ruleBlockingUrl, ruleElemhide, ruleElemhideGenericBlock]);
+    const result = await SafariContentBlockerConverter.convertArray([ruleCss, ruleBlockingUrl, ruleElemhide, ruleElemhideGenericBlock]);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -518,8 +518,8 @@ QUnit.test("Elemhide rules", function (assert) {
     assert.equal(converted[3].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "lenta\\.ru[/:&?]?");
 });
 
-QUnit.test("Important modifier rules sorting order", function(assert) {
-    const result = SafariContentBlockerConverter.convertArray([
+QUnit.test("Important modifier rules sorting order", async function(assert) {
+    const result = await SafariContentBlockerConverter.convertArray([
         '||example-url-block.org^',
         '||example-url-block-important.org^$important',
         '@@||example-url-block-exception.org^',
@@ -547,13 +547,13 @@ QUnit.test("Important modifier rules sorting order", function(assert) {
     assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
 });
 
-QUnit.test("BadFilter rules", function (assert) {
+QUnit.test("BadFilter rules", async function (assert) {
 
     const rule = new adguard.rules.UrlFilterRule('||example.org^$image', 0);
     const ruleTwo = new adguard.rules.UrlFilterRule("||test.org^");
     const badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$badfilter,image");
 
-    const result = SafariContentBlockerConverter.convertArray([rule, ruleTwo, badFilterRule]);
+    const result = await SafariContentBlockerConverter.convertArray([rule, ruleTwo, badFilterRule]);
     assert.equal(result.errorsCount, 0);
 
     const converted = JSON.parse(result.converted);
@@ -562,11 +562,11 @@ QUnit.test("BadFilter rules", function (assert) {
 
 });
 
-QUnit.test("TLD wildcard rules", function (assert) {
+QUnit.test("TLD wildcard rules", async function (assert) {
 
     let rule = new adguard.rules.CssFilterRule('testcases.adguard.*,surge.*###case-5-wildcard-for-tld > .test-banner');
 
-    let result = SafariContentBlockerConverter.convertArray([rule]);
+    let result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 
     let converted = JSON.parse(result.converted);
@@ -582,7 +582,7 @@ QUnit.test("TLD wildcard rules", function (assert) {
 
     rule = new adguard.rules.UrlFilterRule('||*/test-files/adguard.png$domain=testcases.adguard.*|surge.*');
 
-    result = SafariContentBlockerConverter.convertArray([rule]);
+    result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 
     converted = JSON.parse(result.converted);
@@ -598,7 +598,7 @@ QUnit.test("TLD wildcard rules", function (assert) {
 
     rule = new adguard.rules.UrlFilterRule('|http$script,domain=forbes.*');
 
-    result = SafariContentBlockerConverter.convertArray([rule]);
+    result = await SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
 
     converted = JSON.parse(result.converted);
@@ -612,7 +612,7 @@ QUnit.test("TLD wildcard rules", function (assert) {
     assert.equal(converted[0].action.type, "block");
 });
 
-QUnit.test("Test single file converter", function (assert) {
-    const result = jsonFromFilters(['test.com', 'domain.com###banner'], 100, true);
+QUnit.test("Test single file converter", async function (assert) {
+    const result = await jsonFromFilters(['test.com', 'domain.com###banner'], 100, true);
     assert.ok(result);
 });

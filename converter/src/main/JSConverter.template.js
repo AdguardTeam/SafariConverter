@@ -6,11 +6,12 @@
 
 /**
 * The main conversion function that is called from the iOS app
-* 
+*
 * @param {} rules Rules to convert
 * @param {*} limit Max number of rules
 * @param {*} optimize True if we should apply additional optimization
 * @param {*} advancedBlocking True if we need advanced blocking json
+* @param {*} chunkSize (optional) async load rules by chunks of size
 */
 var jsonFromFilters = (function () {
 
@@ -22,16 +23,16 @@ var jsonFromFilters = (function () {
     }
 
 /**
- * Start of the dependencies content 
+ * Start of the dependencies content
  */
 /* DEPENDENCIES_CONTENT_PLACEHOLDER */
 /**
- * End of the dependencies content 
+ * End of the dependencies content
  */
 
-    return function (rules, limit, optimize, advancedBlocking) {
+    return async function (rules, limit, optimize, advancedBlocking, chunkSize) {
         try {
-            return SafariContentBlockerConverter.convertArray(rules, limit, optimize, advancedBlocking);
+            return await SafariContentBlockerConverter.convertArray(rules, limit, optimize, advancedBlocking, chunkSize);
         } catch (ex) {
             console.log('Unexpected error: ' + ex);
         }
