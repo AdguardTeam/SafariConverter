@@ -20,6 +20,8 @@
  * and https://github.com/AdguardTeam/AdguardBrowserExtension/blob/master/Extension/tests/rule-converter/test-rule-converter.js
  */
 
+const MAX_DOMAINS_IN_CSS_BLOCKING_RULE = 250;
+
 (function (adguard, api) {
     const stringUtils = adguard.utils.strings;
     /**
@@ -409,6 +411,34 @@
     const isComment = rule => stringUtils.startWith(rule, api.FilterRule.COMMENT);
 
     /**
+     * Checks if rule text is css blocking rules
+     * @param {string} rule
+     * @return {boolean}
+     */
+    const isCssBlockingRule = rule => (
+        rule.indexOf(api.FilterRule.MASK_CSS_RULE) > 0
+    );
+
+    /**
+     * Separates css blocking rule if amount of domains is more then 250
+     * @param ruleText
+     */
+    const handleMaxDomainsAmount = (ruleText) => {
+        const domains = ruleText.substr(0, ruleText.indexOf(api.FilterRule.MASK_CSS_RULE)).split(',');
+        const selectors = ruleText.substr(ruleText.indexOf(api.FilterRule.MASK_CSS_RULE));
+        if (domains.length > MAX_DOMAINS_IN_CSS_BLOCKING_RULE) {
+            // ToDo: handle for unlimited amount of rules
+            const firstPartDomains = domains.slice(0, MAX_DOMAINS_IN_CSS_BLOCKING_RULE);
+            const secondPartDomains = domains.slice(MAX_DOMAINS_IN_CSS_BLOCKING_RULE);
+            return [
+                `${firstPartDomains}${selectors}`,
+                `${secondPartDomains}${selectors}`,
+            ];
+        }
+        return ruleText;
+    }
+
+    /**
      * Convert external scriptlet rule to AdGuard scriptlet syntax
      * @param {string} rule convert rule
      */
@@ -443,6 +473,10 @@
         const ruleWithConvertedOptions = convertOptions(rule);
         if (ruleWithConvertedOptions) {
             return ruleWithConvertedOptions;
+        }
+
+        if (isCssBlockingRule(rule)) {
+            return handleMaxDomainsAmount(rule);
         }
 
         return rule;
